@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>后台管理 - 个人主页</title>
+    <link rel="stylesheet" href="/static/docsy-styles.css">
+    <link rel="stylesheet" href="/static/styles.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .admin-container {
+            width: 100%;
+            max-width: 480px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .admin-editor-container {
+            width: 100%;
+            max-width: 700px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .admin-card {
+            background: var(--bg-white);
+            border-radius: 20px;
+            box-shadow: var(--shadow-xl);
+            overflow: hidden;
+            animation: slideUp 0.5s ease-out;
+        }
+
+        .admin-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 1.5rem;
+            background: var(--docsy-bg-secondary);
+            border-bottom: 1px solid var(--docsy-border);
+            flex-wrap: wrap;
+            gap: 0.75rem;
+        }
+
+        .admin-bar-user {
+            font-weight: 600;
+            color: var(--docsy-text-primary);
+            font-size: 0.95rem;
+        }
+
+        .editor-form {
+            padding: 1.5rem;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .form-row.full {
+            grid-template-columns: 1fr;
+        }
+
+        .form-field {
+            display: flex;
+            flex-direction: column;
+            gap: 0.35rem;
+        }
+
+        .form-field label {
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: var(--docsy-text-primary);
+        }
+
+        .form-field input,
+        .form-field textarea {
+            padding: 0.65rem 0.85rem;
+            border: 1px solid var(--docsy-border);
+            border-radius: var(--docsy-radius-md);
+            font-size: 0.9rem;
+            font-family: inherit;
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            color: var(--docsy-text-primary);
+            background: var(--docsy-bg-secondary);
+        }
+
+        .form-field input:focus,
+        .form-field textarea:focus {
+            border-color: var(--docsy-primary);
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+            background: var(--docsy-bg-primary);
+        }
+
+        .form-field textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .btn-row {
+            display: flex;
+            gap: 0.75rem;
+            margin-top: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .password-panel {
+            margin-top: 1rem;
+            padding: 1rem;
+            background: var(--docsy-bg-secondary);
+            border-radius: var(--docsy-radius-md);
+            border: 1px solid var(--docsy-border);
+        }
+
+        .password-panel h4 {
+            font-size: 0.95rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            color: var(--docsy-text-primary);
+        }
+
+        .toggle-password-panel {
+            color: var(--docsy-primary);
+            cursor: pointer;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        .toggle-password-panel:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 520px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .hidden { display: none !important; }
+    </style>
+</head>
+<body>
+    <div class="background-shapes">
+        <div class="shape shape-1"></div>
+        <div class="shape shape-2"></div>
+        <div class="shape shape-3"></div>
+    </div>
+
+    <!-- 登录视图 -->
+    <div class="admin-container" id="loginView">
+        <div class="admin-card">
+            <div class="card-header">
+                <div class="logo">
+                    <div class="logo-icon">
+                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <rect width="24" height="24" rx="4" fill="var(--primary-color)"/>
+                            <path d="M7 7h10v2H7V7zm0 4h7v2H7v-2zm0 4h10v2H7v-2z" fill="white"/>
+                        </svg>
+                    </div>
+                    <h1>管理员登录</h1>
+                </div>
+                <p class="subtitle">登录以编辑个人主页信息</p>
+            </div>
+
+            <form id="loginForm" class="login-form">
+                <div class="form-group">
+                    <label for="loginUsername">
+                        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M10 0C4.48 0 0 4.48 0 10C0 15.52 4.48 20 10 20C15.52 20 20 15.52 20 10C20 4.48 15.52 0 10 0ZM10 3C11.66 3 13 4.34 13 6C13 7.66 11.66 9 10 9C8.34 9 7 7.66 7 6C7 4.34 8.34 3 10 3ZM10 17.2C7.5 17.2 5.29 15.92 4 13.98C4.03 11.99 8 10.9 10 10.9C11.99 10.9 15.97 11.99 16 13.98C14.71 15.92 12.5 17.2 10 17.2Z" fill="#6c757d"/>
+                        </svg>
+                        用户名
+                    </label>
+                    <input type="text" id="loginUsername" name="username" placeholder="请输入管理员用户名" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="loginPassword">
+                        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M10 0C4.48 0 0 4.48 0 10C0 15.52 4.48 20 10 20C15.52 20 20 15.52 20 10C20 4.48 15.52 0 10 0ZM8 15V11H6L10 5L14 11H12V15H8Z" fill="#6c757d"/>
+                        </svg>
+                        密码
+                    </label>
+                    <div class="password-input">
+                        <input type="password" id="loginPassword" name="password" placeholder="请输入密码" required>
+                        <button type="button" class="toggle-password" onclick="togglePassword('loginPassword', this)">
+                            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M10 4C5.58 4 2.01 6.92 0.59 10.01C2.01 13.09 5.58 16 10 16C14.42 16 17.99 13.09 19.41 10.01C17.99 6.92 14.42 4 10 4ZM10 14C7.79 14 6 12.21 6 10C6 7.79 7.79 6 10 6C12.21 6 14 7.79 14 10C14 12.21 12.21 14 10 14ZM10 8C8.9 8 8 8.9 8 10C8 11.1 8.9 12 10 12C11.1 12 12 11.1 12 10C12 8.9 11.1 8 10 8Z" fill="#6c757d"/>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+
+                <button type="submit" class="submit-btn">
+                    <span>登录</span>
+                </button>
+
+                <div id="loginMessage" class="message"></div>
+            </form>
+
+            <div class="card-footer">
+                <span class="toggle-password-panel" id="showPasswordPanel">修改密码</span>
+                <div class="password-panel hidden" id="passwordPanel">
+                    <h4>修改管理员密码</h4>
+                    <div class="form-group">
+                        <input type="text" id="pwdUsername" placeholder="用户名" style="margin-bottom:8px;">
+                        <input type="password" id="pwdOldPassword" placeholder="旧密码" style="margin-bottom:8px;">
+                        <input type="password" id="pwdNewPassword" placeholder="新密码（至少8位）">
+                    </div>
+                    <button class="docsy-btn docsy-btn-secondary" id="updatePasswordBtn" style="width:100%;">确认修改</button>
+                    <div id="passwordMessage" class="message"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 编辑器视图 -->
+    <div class="admin-editor-container hidden" id="editorView">
+        <div class="admin-card">
+            <div class="admin-bar">
+                <span class="admin-bar-user" id="adminUsername">管理员</span>
+                <button class="docsy-btn docsy-btn-danger" id="logoutBtn">退出登录</button>
+            </div>
+
+            <div class="editor-form">
+                <div id="editorMessage" class="message"></div>
+
+                <form id="profileForm">
+                    <div class="form-row">
+                        <div class="form-field">
+                            <label for="eName">姓名</label>
+                            <input type="text" id="eName">
+                        </div>
+                        <div class="form-field">
+                            <label for="eTitle">头衔/职位</label>
+                            <input type="text" id="eTitle">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-field">
+                            <label for="eGreeting">Hero 问候语</label>
+                            <input type="text" id="eGreeting" placeholder="如：你好，我是">
+                        </div>
+                        <div class="form-field">
+                            <label for="eTagline">Hero 副标题</label>
+                            <input type="text" id="eTagline" placeholder="如：欢迎来到我的个人主页">
+                        </div>
+                    </div>
+
+                    <div class="form-row full">
+                        <div class="form-field">
+                            <label for="eBio">个人简介</label>
+                            <textarea id="eBio" rows="4"></textarea>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-field">
+                            <label for="eAvatar">头像 URL</label>
+                            <input type="text" id="eAvatar" placeholder="https://...">
+                        </div>
+                        <div class="form-field">
+                            <label for="eEmail">邮箱</label>
+                            <input type="email" id="eEmail">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-field">
+                            <label for="ePhone">电话</label>
+                            <input type="text" id="ePhone">
+                        </div>
+                        <div class="form-field">
+                            <label for="eLocation">所在地</label>
+                            <input type="text" id="eLocation">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-field">
+                            <label for="eGithub">GitHub URL</label>
+                            <input type="text" id="eGithub">
+                        </div>
+                        <div class="form-field">
+                            <label for="eLinkedin">LinkedIn URL</label>
+                            <input type="text" id="eLinkedin">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-field">
+                            <label for="eWebsite">个人网站 URL</label>
+                            <input type="text" id="eWebsite">
+                        </div>
+                    </div>
+
+                    <div class="btn-row">
+                        <button type="submit" class="docsy-btn docsy-btn-primary">保存修改</button>
+                        <button type="button" class="docsy-btn docsy-btn-secondary" id="cancelEditBtn">取消</button>
+                    </div>
+                </form>
+
+                <div class="password-panel" style="margin-top:1.5rem;">
+                    <h4>修改密码</h4>
+                    <div class="form-row">
+                        <div class="form-field">
+                            <input type="text" id="ePwdUsername" placeholder="用户名">
+                        </div>
+                        <div class="form-field">
+                            <input type="password" id="ePwdOld" placeholder="旧密码">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-field">
+                            <input type="password" id="ePwdNew" placeholder="新密码（至少8位）">
+                        </div>
+                    </div>
+                    <button type="button" class="docsy-btn docsy-btn-secondary" id="editorUpdatePasswordBtn">修改密码</button>
+                    <div id="editorPasswordMessage" class="message"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/static/admin.js"></script>
+</body>
+</html>

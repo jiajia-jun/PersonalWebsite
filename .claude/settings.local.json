@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(go build *)",
+      "Bash(go version *)",
+      "Read(//e/Dev/Compiler/Golang\" 2>/dev/**)"
+    ]
+  }
+}
