@@ -3,7 +3,28 @@
     "allow": [
       "Bash(go build *)",
       "Bash(go version *)",
-      "Read(//e/Dev/Compiler/Golang\" 2>/dev/**)"
+      "Read(//e/Dev/Compiler/Golang\" 2>/dev/**)",
+      "Bash(claude --version)",
+      "Bash(git --version)",
+      "Bash(node *)",
+      "Bash(npm list *)",
+      "Bash(mv docsy-styles.css css/)",
+      "Bash(mv showcase.css css/)",
+      "Bash(mv styles.css css/)",
+      "Bash(mv home.js js/)",
+      "Bash(mv admin.js js/)",
+      "Bash(mkdir -p audio)",
+      "Bash(cp \"D:/KuGou/TAVOS - 涧.mp3\" audio/jian.mp3)",
+      "Bash(dir \"E:\\\\Dev_Project\\\\Go_Project\\\\WebProject_demo\\\\static\\\\image\")",
+      "Bash(dir E:\\\\Dev_Project\\\\Go_Project\\\\WebProject_demo\\\\image *)",
+      "Bash(./main.exe)",
+      "Bash(curl -s http://localhost:8080/api/profile)",
+      "Bash(curl -s http://localhost:8080/admin)",
+      "Bash(curl *)",
+      "Bash(pkill main.exe)",
+      "Bash(python3 -c \"import sys,json; d=json.load\\(sys.stdin\\); print\\('Name:', d['data']['name']\\); print\\('Skills:', d['data']['skills']\\); print\\('Interests:', d['data']['interests']\\)\")",
+      "Bash(git add *)",
+      "Bash(git rm *)"
     ]
   }
 }

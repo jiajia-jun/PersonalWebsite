@@ -1,0 +1,649 @@
+// 个人展示页脚本
+document.addEventListener('DOMContentLoaded', async () => {
+    await loadProfile();
+    setupPageNavigation();
+    setupTypewriter();
+    setupParticles();
+    setupMusic();
+    renderGallery();
+    setupBouncingBalls();
+});
+
+// ==================== 页面导航 ====================
+function setupPageNavigation() {
+    var links = document.querySelectorAll('.sidebar-link[data-page]');
+    links.forEach(function(link) {
+        link.addEventListener('click', function() {
+            navigateTo(this.getAttribute('data-page'));
+        });
+    });
+
+    // 处理浏览器后退/前进
+    window.addEventListener('hashchange', function() {
+        var page = window.location.hash.replace('#', '') || 'home';
+        showPage(page);
+    });
+
+    // 初始加载
+    var initial = window.location.hash.replace('#', '') || 'home';
+    showPage(initial);
+}
+
+function navigateTo(page) {
+    window.location.hash = page;
+}
+
+function showPage(page) {
+    // 更新侧边栏高亮
+    document.querySelectorAll('.sidebar-link[data-page]').forEach(function(l) {
+        l.classList.remove('active');
+    });
+    var activeLink = document.querySelector('.sidebar-link[data-page="' + page + '"]');
+    if (activeLink) activeLink.classList.add('active');
+
+    // 切换页面
+    document.querySelectorAll('.page-section').forEach(function(s) {
+        s.classList.remove('active');
+    });
+    var pageEl = document.getElementById('page-' + page);
+    if (pageEl) pageEl.classList.add('active');
+}
+
+// ==================== 加载个人信息 ====================
+async function loadProfile() {
+    try {
+        var res = await fetch('/api/profile');
+        var result = await res.json();
+        if (result.code === 200) {
+            renderProfile(result.data);
+        }
+    } catch (err) {
+        console.error('加载个人信息失败:', err);
+    }
+}
+
+function renderProfile(profile) {
+    var name = profile.name || '你的姓名';
+
+    // 浏览器标题
+    document.title = name !== '你的姓名' ? name + ' - 个人主页' : '个人主页';
+
+    // 侧边栏
+    document.getElementById('sidebarName').textContent = name;
+    var sidebarAvatar = document.getElementById('sidebarAvatar');
+    if (profile.avatar) {
+        sidebarAvatar.innerHTML = '<img src="' + escapeHtml(profile.avatar) + '" alt="">';
+    } else if (name !== '你的姓名') {
+        document.getElementById('sidebarInitial').textContent = name.charAt(0);
+    }
+
+    // Hero
+    document.getElementById('greetingText').textContent = profile.greeting || '你好，我是';
+    document.getElementById('heroName').textContent = name;
+    document.getElementById('heroTagline').textContent = profile.tagline || '';
+
+    // 关于页
+    document.getElementById('aboutNameLarge').textContent = name;
+    document.getElementById('aboutTitleLarge').textContent = profile.title || '';
+    document.getElementById('aboutBioLarge').textContent = profile.bio || '';
+
+    if (profile.avatar) {
+        document.getElementById('aboutAvatarLarge').innerHTML = '<img src="' + escapeHtml(profile.avatar) + '" alt="">';
+    } else if (name !== '你的姓名') {
+        document.getElementById('aboutAvatarInitial').textContent = name.charAt(0);
+    }
+
+    // 关于页 - 兴趣标签
+    var interestsEl = document.getElementById('aboutInterests');
+    if (interestsEl && profile.interests && profile.interests.length > 0) {
+        interestsEl.innerHTML = profile.interests.map(function(t) {
+            return '<span class="interest-tag">' + escapeHtml(t) + '</span>';
+        }).join('');
+    }
+
+    // 关于页 - 数据统计
+    var statsEl = document.getElementById('aboutStats');
+    if (statsEl && profile.stats && profile.stats.length > 0) {
+        statsEl.innerHTML = profile.stats.map(function(s) {
+            return '<div class="stat-card"><span class="stat-value">' + escapeHtml(s.value) + '</span><span class="stat-label">' + escapeHtml(s.label) + '</span></div>';
+        }).join('');
+    }
+
+    // 关于页 - 技能列表
+    var skillsEl = document.getElementById('skillsList');
+    if (skillsEl && profile.skills && profile.skills.length > 0) {
+        skillsEl.innerHTML = profile.skills.map(function(s) {
+            return '<div class="skill-item"><div class="skill-info"><span>' + escapeHtml(s.name) + '</span><span>' + (s.level || 0) + '%</span></div><div class="skill-bar"><div class="skill-fill" style="width:' + (s.level || 0) + '%"></div></div></div>';
+        }).join('');
+    }
+
+    // 关于页 - 时间线
+    var timelineEl = document.getElementById('timeline');
+    if (timelineEl && profile.timeline && profile.timeline.length > 0) {
+        timelineEl.innerHTML = profile.timeline.map(function(t) {
+            return '<div class="timeline-item"><div class="timeline-dot"></div><div class="timeline-content"><span class="timeline-period">' + escapeHtml(t.period) + '</span><h4>' + escapeHtml(t.title) + '</h4><p>' + escapeHtml(t.description) + '</p></div></div>';
+        }).join('');
+    }
+
+    // 联系方式
+    renderContactGrid(profile);
+}
+
+function renderContactGrid(profile) {
+    var grid = document.getElementById('contactGrid');
+    var items = [];
+
+    if (profile.email) {
+        items.push({
+            icon: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>',
+            label: '邮箱',
+            value: profile.email,
+            href: 'mailto:' + profile.email
+        });
+    }
+    if (profile.phone) {
+        items.push({
+            icon: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>',
+            label: '电话',
+            value: profile.phone,
+            href: 'tel:' + profile.phone
+        });
+    }
+    if (profile.github) {
+        items.push({
+            icon: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 00-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0020 4.77 5.07 5.07 0 0019.91 1S18.73.65 16 2.48a13.38 13.38 0 00-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 005 4.77a5.44 5.44 0 00-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 009 18.13V22"/></svg>',
+            label: 'GitHub',
+            value: profile.github,
+            href: profile.github
+        });
+    }
+    if (profile.website) {
+        items.push({
+            icon: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg>',
+            label: '网站',
+            value: profile.website,
+            href: profile.website
+        });
+    }
+    if (profile.location) {
+        items.push({
+            icon: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>',
+            label: '所在地',
+            value: profile.location,
+            href: null
+        });
+    }
+    if (profile.linkedin) {
+        items.push({
+            icon: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>',
+            label: 'LinkedIn',
+            value: profile.linkedin,
+            href: profile.linkedin
+        });
+    }
+
+    if (items.length === 0) {
+        grid.innerHTML = '<div style="text-align:center;color:rgba(200,200,220,0.4);grid-column:1/-1;padding:2rem;">暂无联系方式</div>';
+        return;
+    }
+
+    grid.innerHTML = items.map(function(item) {
+        var inner = '<div class="contact-icon">' + item.icon + '</div>' +
+                    '<h3>' + escapeHtml(item.label) + '</h3>' +
+                    '<p>' + escapeHtml(item.value) + '</p>';
+        if (item.href) {
+            return '<a href="' + escapeHtml(item.href) + '" class="contact-card" target="_blank" rel="noopener">' + inner + '</a>';
+        }
+        return '<div class="contact-card">' + inner + '</div>';
+    }).join('');
+}
+
+// ==================== 打字机效果 ====================
+function setupTypewriter() {
+    var greetingEl = document.getElementById('greetingText');
+    var cursorEl = document.querySelector('.typewriter-cursor');
+    var text = greetingEl.textContent;
+    greetingEl.textContent = '';
+    var i = 0;
+
+    function type() {
+        if (i < text.length) {
+            greetingEl.textContent += text.charAt(i);
+            i++;
+            setTimeout(type, 80);
+        } else {
+            setTimeout(function() {
+                if (cursorEl) cursorEl.style.display = 'none';
+            }, 2000);
+        }
+    }
+
+    setTimeout(type, 300);
+}
+
+// ==================== 粒子连线网络 ====================
+function setupParticles() {
+    var canvas = document.getElementById('particleCanvas');
+    if (!canvas) return;
+
+    var ctx = canvas.getContext('2d');
+    var particles = [];
+    var PARTICLE_COUNT = 80;
+    var CONNECT_DIST = 140;
+    var MOUSE_REPEL = 100;
+
+    var mouse = { x: -9999, y: -9999 };
+
+    function resize() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+    }
+    resize();
+    window.addEventListener('resize', resize);
+
+    // 初始化粒子
+    for (var i = 0; i < PARTICLE_COUNT; i++) {
+        particles.push({
+            x: Math.random() * canvas.width,
+            y: Math.random() * canvas.height,
+            vx: (Math.random() - 0.5) * 0.6,
+            vy: (Math.random() - 0.5) * 0.6,
+            radius: Math.random() * 2 + 1
+        });
+    }
+
+    document.addEventListener('mousemove', function(e) {
+        mouse.x = e.clientX;
+        mouse.y = e.clientY;
+    });
+
+    document.addEventListener('mouseleave', function() {
+        mouse.x = -9999;
+        mouse.y = -9999;
+    });
+
+    function animate() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        for (var i = 0; i < particles.length; i++) {
+            var p = particles[i];
+
+            // 移动
+            p.x += p.vx;
+            p.y += p.vy;
+
+            // 边界反弹
+            if (p.x < 0 || p.x > canvas.width) p.vx *= -1;
+            if (p.y < 0 || p.y > canvas.height) p.vy *= -1;
+            p.x = Math.max(0, Math.min(canvas.width, p.x));
+            p.y = Math.max(0, Math.min(canvas.height, p.y));
+
+            // 鼠标驱散
+            var dx = p.x - mouse.x;
+            var dy = p.y - mouse.y;
+            var dist = Math.sqrt(dx * dx + dy * dy);
+            if (dist < MOUSE_REPEL && dist > 0) {
+                var force = (MOUSE_REPEL - dist) / MOUSE_REPEL;
+                p.vx += (dx / dist) * force * 1.5;
+                p.vy += (dy / dist) * force * 1.5;
+            }
+
+            // 速度衰减
+            p.vx *= 0.99;
+            p.vy *= 0.99;
+
+            // 绘制粒子
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+            ctx.fillStyle = 'rgba(150, 160, 220, 0.5)';
+            ctx.fill();
+        }
+
+        // 连线
+        for (var i = 0; i < particles.length; i++) {
+            for (var j = i + 1; j < particles.length; j++) {
+                var a = particles[i];
+                var b = particles[j];
+                var dx = a.x - b.x;
+                var dy = a.y - b.y;
+                var dist = Math.sqrt(dx * dx + dy * dy);
+
+                if (dist < CONNECT_DIST) {
+                    var opacity = (1 - dist / CONNECT_DIST) * 0.25;
+                    ctx.beginPath();
+                    ctx.moveTo(a.x, a.y);
+                    ctx.lineTo(b.x, b.y);
+                    ctx.strokeStyle = 'rgba(150, 160, 220, ' + opacity + ')';
+                    ctx.lineWidth = 0.5;
+                    ctx.stroke();
+                }
+            }
+        }
+
+        requestAnimationFrame(animate);
+    }
+
+    animate();
+}
+
+// ==================== 背景音乐 ====================
+function setupMusic() {
+    var audio = new Audio('/static/audio/jian.mp3');
+    audio.loop = true;
+    audio.volume = 0.35;
+
+    var btn = document.getElementById('musicBtn');
+    var tooltip = document.getElementById('musicTooltip');
+    var playIcon = btn.querySelector('.music-icon-play');
+    var pauseIcon = btn.querySelector('.music-icon-pause');
+    var playing = false;
+
+    btn.addEventListener('click', function() {
+        if (playing) {
+            audio.pause();
+            btn.classList.remove('playing');
+            playIcon.style.display = '';
+            pauseIcon.style.display = 'none';
+            playing = false;
+        } else {
+            audio.play().catch(function() {});
+            btn.classList.add('playing');
+            playIcon.style.display = 'none';
+            pauseIcon.style.display = '';
+            playing = true;
+        }
+    });
+
+    // 悬停提示
+    btn.addEventListener('mouseenter', function() { tooltip.classList.add('show'); });
+    btn.addEventListener('mouseleave', function() { tooltip.classList.remove('show'); });
+
+    // 首次用户交互后尝试自动播放
+    var autoplayTried = false;
+    document.addEventListener('click', function() {
+        if (!autoplayTried && !playing) {
+            autoplayTried = true;
+            audio.play().then(function() {
+                playing = true;
+                btn.classList.add('playing');
+                playIcon.style.display = 'none';
+                pauseIcon.style.display = '';
+            }).catch(function() {});
+        }
+    }, { once: true });
+}
+
+// ==================== 相册 - 水平滚动 ====================
+function renderGallery() {
+    var strip = document.getElementById('galleryStrip');
+    var wrapper = document.getElementById('galleryStripWrapper');
+    var lightbox = document.getElementById('lightbox');
+    var lightboxImg = document.getElementById('lightboxImg');
+    var lightboxClose = document.getElementById('lightboxClose');
+
+    if (!strip || !wrapper) return;
+
+    // 图片文件名列表
+    var imageFiles = ['51.jpg', '52.jpg', '53.jpg', '56.jpg', '57.jpg', '58.jpg', '67.jpg'];
+
+    // 渲染图片（复制两份实现无缝循环）
+    var itemsHtml = '';
+    for (var r = 0; r < 2; r++) {
+        for (var i = 0; i < imageFiles.length; i++) {
+            var src = '/static/image/' + imageFiles[i];
+            itemsHtml += '<div class="gallery-item" data-src="' + src + '" data-index="' + i + '">' +
+                '<img src="' + src + '" alt="相册图片 ' + (i + 1) + '" loading="lazy">' +
+            '</div>';
+        }
+    }
+    strip.innerHTML = itemsHtml;
+
+    // 自动滚动与拖拽
+    var scrollPos = 0;
+    var autoSpeed = 0.4;        // 像素/帧
+    var isDragging = false;
+    var dragStartX = 0;
+    var dragStartScroll = 0;
+    var autoPaused = false;
+    var pauseTimer = null;
+
+    function pauseAuto() {
+        autoPaused = true;
+        clearTimeout(pauseTimer);
+        pauseTimer = setTimeout(function() { autoPaused = false; }, 2000);
+    }
+
+    // 鼠标拖拽
+    wrapper.addEventListener('mousedown', function(e) {
+        isDragging = true;
+        dragStartX = e.clientX;
+        dragStartScroll = scrollPos;
+        wrapper.classList.add('dragging');
+        pauseAuto();
+        e.preventDefault();
+    });
+
+    window.addEventListener('mousemove', function(e) {
+        if (!isDragging) return;
+        var dx = e.clientX - dragStartX;
+        scrollPos = dragStartScroll - dx;
+        // 循环边界
+        var singleWidth = strip.scrollWidth / 2;
+        while (scrollPos < 0) scrollPos += singleWidth;
+        while (scrollPos >= singleWidth) scrollPos -= singleWidth;
+        strip.style.transform = 'translateX(' + (-scrollPos) + 'px)';
+    });
+
+    window.addEventListener('mouseup', function() {
+        if (isDragging) {
+            isDragging = false;
+            wrapper.classList.remove('dragging');
+            dragStartScroll = scrollPos;
+        }
+    });
+
+    // 触摸拖拽
+    wrapper.addEventListener('touchstart', function(e) {
+        isDragging = true;
+        dragStartX = e.touches[0].clientX;
+        dragStartScroll = scrollPos;
+        pauseAuto();
+    });
+
+    window.addEventListener('touchmove', function(e) {
+        if (!isDragging) return;
+        var dx = e.touches[0].clientX - dragStartX;
+        scrollPos = dragStartScroll - dx;
+        var singleWidth = strip.scrollWidth / 2;
+        while (scrollPos < 0) scrollPos += singleWidth;
+        while (scrollPos >= singleWidth) scrollPos -= singleWidth;
+        strip.style.transform = 'translateX(' + (-scrollPos) + 'px)';
+    });
+
+    window.addEventListener('touchend', function() {
+        if (isDragging) {
+            isDragging = false;
+            dragStartScroll = scrollPos;
+        }
+    });
+
+    // 灯箱点击
+    strip.addEventListener('click', function(e) {
+        var item = e.target.closest('.gallery-item');
+        if (!item) return;
+        // 如果刚拖拽完，忽略点击
+        if (Math.abs(scrollPos - dragStartScroll) > 5) return;
+        var src = item.getAttribute('data-src');
+        lightboxImg.src = src;
+        lightboxImg.alt = '相册图片';
+        lightbox.classList.add('show');
+    });
+
+    lightboxClose.addEventListener('click', function() {
+        lightbox.classList.remove('show');
+    });
+
+    lightbox.addEventListener('click', function(e) {
+        if (e.target === lightbox) lightbox.classList.remove('show');
+    });
+
+    // 键盘关闭
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') lightbox.classList.remove('show');
+    });
+
+    // 主循环
+    function autoScroll() {
+        if (!autoPaused && !isDragging) {
+            scrollPos += autoSpeed;
+            var singleWidth = strip.scrollWidth / 2;
+            if (scrollPos >= singleWidth) scrollPos -= singleWidth;
+            strip.style.transform = 'translateX(' + (-scrollPos) + 'px)';
+        }
+        requestAnimationFrame(autoScroll);
+    }
+
+    requestAnimationFrame(autoScroll);
+}
+
+// ==================== 弹球物理引擎 ====================
+function setupBouncingBalls() {
+    var canvas = document.getElementById('ballCanvas');
+    if (!canvas) return;
+
+    var ctx = canvas.getContext('2d');
+    var balls = [];
+    var ballImg = new Image();
+    ballImg.src = '/static/img/my.jpg';
+
+    var GRAVITY = 600;
+    var RESTITUTION = 0.6;
+    var RADIUS = 20;
+    var FADE_DURATION = 5000;
+
+    var lastTime = performance.now();
+
+    function resize() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+    }
+    resize();
+    window.addEventListener('resize', resize);
+
+    document.addEventListener('click', function(e) {
+        if (isInteractive(e.target)) return;
+        spawnBall(e.clientX, e.clientY);
+    });
+
+    function isInteractive(el) {
+        var interactiveTags = ['A', 'BUTTON', 'INPUT', 'TEXTAREA', 'SELECT', 'NAV', 'LABEL', 'ASIDE'];
+        while (el && el !== document.body) {
+            if (interactiveTags.indexOf(el.tagName) !== -1) return true;
+            if (el.getAttribute('role') === 'button') return true;
+            if (el.classList && el.classList.contains('sidebar-link')) return true;
+            if (el.classList && el.classList.contains('sidebar')) return true;
+            if (el.classList && el.classList.contains('music-btn')) return true;
+            if (el.classList && el.classList.contains('gallery-item')) return true;
+            if (el.onclick && el.tagName !== 'svg' && el.tagName !== 'path') return true;
+            el = el.parentElement;
+        }
+        return false;
+    }
+
+    function spawnBall(x, y) {
+        x = Math.max(RADIUS, Math.min(canvas.width - RADIUS, x));
+        y = Math.max(RADIUS, Math.min(canvas.height - RADIUS, y));
+        balls.push({
+            x: x, y: y,
+            vx: (Math.random() - 0.5) * 300,
+            vy: -200 - Math.random() * 200,
+            radius: RADIUS,
+            born: performance.now()
+        });
+    }
+
+    function update(dt) {
+        dt = Math.min(dt, 0.05);
+        var now = performance.now();
+
+        for (var i = 0; i < balls.length; i++) {
+            var b = balls[i];
+            b.vy += GRAVITY * dt;
+            b.x += b.vx * dt;
+            b.y += b.vy * dt;
+
+            if (b.x - b.radius < 0) { b.x = b.radius; b.vx = Math.abs(b.vx) * RESTITUTION; }
+            if (b.x + b.radius > canvas.width) { b.x = canvas.width - b.radius; b.vx = -Math.abs(b.vx) * RESTITUTION; }
+            if (b.y - b.radius < 0) { b.y = b.radius; b.vy = Math.abs(b.vy) * RESTITUTION; }
+            if (b.y + b.radius > canvas.height) { b.y = canvas.height - b.radius; b.vy = -Math.abs(b.vy) * RESTITUTION; }
+        }
+
+        for (var i = 0; i < balls.length; i++) {
+            for (var j = i + 1; j < balls.length; j++) {
+                var a = balls[i], b = balls[j];
+                var dx = b.x - a.x, dy = b.y - a.y;
+                var dist = Math.sqrt(dx * dx + dy * dy);
+                var minDist = a.radius + b.radius;
+
+                if (dist < minDist && dist > 0) {
+                    var overlap = minDist - dist;
+                    var nx = dx / dist, ny = dy / dist;
+                    a.x -= nx * overlap / 2; a.y -= ny * overlap / 2;
+                    b.x += nx * overlap / 2; b.y += ny * overlap / 2;
+
+                    var dvx = a.vx - b.vx, dvy = a.vy - b.vy;
+                    var dvDotN = dvx * nx + dvy * ny;
+                    if (dvDotN > 0) {
+                        a.vx -= dvDotN * nx; a.vy -= dvDotN * ny;
+                        b.vx += dvDotN * nx; b.vy += dvDotN * ny;
+                    }
+                }
+            }
+        }
+
+        balls = balls.filter(function(b) { return (now - b.born) < FADE_DURATION; });
+    }
+
+    function render() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        var now = performance.now();
+
+        for (var i = 0; i < balls.length; i++) {
+            var b = balls[i];
+            var elapsed = now - b.born;
+            var opacity = Math.max(0, 1 - elapsed / FADE_DURATION);
+
+            ctx.save();
+            ctx.globalAlpha = opacity;
+            ctx.beginPath();
+            ctx.arc(b.x, b.y, b.radius, 0, Math.PI * 2);
+            ctx.closePath();
+            ctx.clip();
+            if (ballImg.complete && ballImg.naturalWidth > 0) {
+                var size = b.radius * 2;
+                ctx.drawImage(ballImg, b.x - b.radius, b.y - b.radius, size, size);
+            } else {
+                ctx.fillStyle = '#4F46E5';
+                ctx.fill();
+            }
+            ctx.restore();
+        }
+    }
+
+    function loop(timestamp) {
+        var dt = (timestamp - lastTime) / 1000;
+        lastTime = timestamp;
+        update(dt);
+        render();
+        requestAnimationFrame(loop);
+    }
+
+    requestAnimationFrame(loop);
+}
+
+// ==================== 工具函数 ====================
+function escapeHtml(str) {
+    var div = document.createElement('div');
+    div.appendChild(document.createTextNode(str));
+    return div.innerHTML;
+}
