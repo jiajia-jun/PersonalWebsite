@@ -228,11 +228,12 @@ function setupParticles() {
 
     var ctx = canvas.getContext('2d');
     var particles = [];
-    var PARTICLE_COUNT = 80;
-    var CONNECT_DIST = 140;
-    var MOUSE_REPEL = 100;
+    var PARTICLE_COUNT = 130;
+    var CONNECT_DIST = 150;
+    var MOUSE_REPEL = 110;
 
     var mouse = { x: -9999, y: -9999 };
+    var time = 0;
 
     function resize() {
         canvas.width = window.innerWidth;
@@ -246,9 +247,12 @@ function setupParticles() {
         particles.push({
             x: Math.random() * canvas.width,
             y: Math.random() * canvas.height,
-            vx: (Math.random() - 0.5) * 0.6,
-            vy: (Math.random() - 0.5) * 0.6,
-            radius: Math.random() * 2 + 1
+            vx: (Math.random() - 0.5) * 0.8,
+            vy: (Math.random() - 0.5) * 0.8,
+            radius: Math.random() * 2.5 + 1,
+            phase: Math.random() * Math.PI * 2,
+            freq: 0.25 + Math.random() * 0.35,
+            amp: 0.12 + Math.random() * 0.28
         });
     }
 
@@ -264,13 +268,18 @@ function setupParticles() {
 
     function animate() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
+        time += 0.005;
 
         for (var i = 0; i < particles.length; i++) {
             var p = particles[i];
 
+            // 正弦波飘动 - 每个粒子有独立频率
+            var driftX = Math.sin(time * p.freq + p.phase) * p.amp;
+            var driftY = Math.cos(time * p.freq * 1.3 + p.phase) * p.amp;
+
             // 移动
-            p.x += p.vx;
-            p.y += p.vy;
+            p.x += p.vx + driftX;
+            p.y += p.vy + driftY;
 
             // 边界反弹
             if (p.x < 0 || p.x > canvas.width) p.vx *= -1;
@@ -284,18 +293,18 @@ function setupParticles() {
             var dist = Math.sqrt(dx * dx + dy * dy);
             if (dist < MOUSE_REPEL && dist > 0) {
                 var force = (MOUSE_REPEL - dist) / MOUSE_REPEL;
-                p.vx += (dx / dist) * force * 1.5;
-                p.vy += (dy / dist) * force * 1.5;
+                p.vx += (dx / dist) * force * 2;
+                p.vy += (dy / dist) * force * 2;
             }
 
             // 速度衰减
-            p.vx *= 0.99;
-            p.vy *= 0.99;
+            p.vx *= 0.995;
+            p.vy *= 0.995;
 
             // 绘制粒子
             ctx.beginPath();
             ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-            ctx.fillStyle = 'rgba(150, 160, 220, 0.5)';
+            ctx.fillStyle = 'rgba(150, 160, 220, 0.55)';
             ctx.fill();
         }
 
@@ -328,49 +337,111 @@ function setupParticles() {
 
 // ==================== 背景音乐 ====================
 function setupMusic() {
-    var audio = new Audio('/static/audio/jian.mp3');
+    var playlist = [
+        { title: 'TAVOS - 涧', src: '/static/audio/jian.mp3' },
+        { title: 'Toby Fox - His Theme', src: '/static/audio/his-theme.mp3' }
+    ];
+
+    var currentTrack = 0;
+    var audio = new Audio(playlist[currentTrack].src);
     audio.loop = true;
     audio.volume = 0.35;
 
     var btn = document.getElementById('musicBtn');
-    var tooltip = document.getElementById('musicTooltip');
     var playIcon = btn.querySelector('.music-icon-play');
     var pauseIcon = btn.querySelector('.music-icon-pause');
     var playing = false;
 
-    btn.addEventListener('click', function() {
-        if (playing) {
-            audio.pause();
-            btn.classList.remove('playing');
-            playIcon.style.display = '';
-            pauseIcon.style.display = 'none';
-            playing = false;
-        } else {
-            audio.play().catch(function() {});
+    // 更新按钮状态
+    function setPlaying(state) {
+        playing = state;
+        if (state) {
             btn.classList.add('playing');
             playIcon.style.display = 'none';
             pauseIcon.style.display = '';
-            playing = true;
+        } else {
+            btn.classList.remove('playing');
+            playIcon.style.display = '';
+            pauseIcon.style.display = 'none';
+        }
+    }
+
+    // 切换曲目
+    function switchTrack(index) {
+        if (index === currentTrack) return;
+        var wasPlaying = playing;
+        audio.pause();
+        currentTrack = index;
+        audio.src = playlist[currentTrack].src;
+        audio.loop = true;
+        audio.volume = 0.35;
+
+        // 更新轮盘高亮
+        document.querySelectorAll('.music-wheel-item').forEach(function(item, i) {
+            item.classList.toggle('active', i === currentTrack);
+        });
+
+        if (wasPlaying) {
+            audio.play().then(function() {
+                setPlaying(true);
+            }).catch(function() {
+                setPlaying(false);
+            });
+        }
+    }
+
+    // 播放/暂停
+    btn.addEventListener('click', function() {
+        if (playing) {
+            audio.pause();
+            setPlaying(false);
+        } else {
+            audio.play().then(function() {
+                setPlaying(true);
+            }).catch(function() {});
         }
     });
 
-    // 悬停提示
-    btn.addEventListener('mouseenter', function() { tooltip.classList.add('show'); });
-    btn.addEventListener('mouseleave', function() { tooltip.classList.remove('show'); });
-
-    // 首次用户交互后尝试自动播放
-    var autoplayTried = false;
-    document.addEventListener('click', function() {
-        if (!autoplayTried && !playing) {
-            autoplayTried = true;
+    // 轮盘点击切换
+    document.querySelectorAll('.music-wheel-item').forEach(function(item) {
+        item.addEventListener('click', function(e) {
+            e.stopPropagation();
+            var trackIndex = parseInt(this.getAttribute('data-track'));
+            if (trackIndex === currentTrack && playing) return; // 同一首歌且正在播放
+            if (trackIndex === currentTrack && !playing) {
+                // 同一首歌但暂停中，恢复播放
+                audio.play().then(function() {
+                    setPlaying(true);
+                }).catch(function() {});
+                return;
+            }
+            switchTrack(trackIndex);
+            // 切换后自动播放
             audio.play().then(function() {
-                playing = true;
-                btn.classList.add('playing');
-                playIcon.style.display = 'none';
-                pauseIcon.style.display = '';
+                setPlaying(true);
             }).catch(function() {});
-        }
-    }, { once: true });
+        });
+    });
+
+    // 初始高亮
+    document.querySelectorAll('.music-wheel-item').forEach(function(item, i) {
+        item.classList.toggle('active', i === currentTrack);
+    });
+
+    // 首次用户交互后自动播放
+    var autoplayTried = false;
+    function tryAutoplay() {
+        if (autoplayTried || playing) return;
+        autoplayTried = true;
+        audio.play().then(function() {
+            setPlaying(true);
+        }).catch(function() {
+            autoplayTried = false;
+        });
+    }
+    ['click', 'keydown', 'scroll', 'touchstart', 'mousemove'].forEach(function(evt) {
+        document.addEventListener(evt, tryAutoplay, { once: true });
+    });
 }
 
 // ==================== 相册 - 水平滚动 ====================
@@ -383,8 +454,9 @@ function renderGallery() {
 
     if (!strip || !wrapper) return;
 
-    // 图片文件名列表
-    var imageFiles = ['51.jpg', '52.jpg', '53.jpg', '56.jpg', '57.jpg', '58.jpg', '67.jpg'];
+    // 图片文件名列表 - 随机洗牌
+    var imageFiles = ['51.jpg','52.jpg','53.jpg','56.jpg','57.jpg','58.jpg','67.jpg','68.jpg','69.jpg','70.jpg','71.jpg','72.jpg','73.jpg','74.jpg','75.jpg','76.jpg'];
+    shuffleArray(imageFiles);
 
     // 渲染图片（复制两份实现无缝循环）
     var itemsHtml = '';
@@ -400,7 +472,7 @@ function renderGallery() {
 
     // 自动滚动与拖拽
     var scrollPos = 0;
-    var autoSpeed = 0.4;        // 像素/帧
+    var autoSpeed = 0.5;
     var isDragging = false;
     var dragStartX = 0;
     var dragStartScroll = 0;
@@ -413,7 +485,7 @@ function renderGallery() {
         pauseTimer = setTimeout(function() { autoPaused = false; }, 2000);
     }
 
-    // 鼠标拖拽
+    // 鼠标拖拽 - 扩大响应区域到整个 wrapper + page-inner
     wrapper.addEventListener('mousedown', function(e) {
         isDragging = true;
         dragStartX = e.clientX;
@@ -422,6 +494,20 @@ function renderGallery() {
         pauseAuto();
         e.preventDefault();
     });
+
+    // 同时在相册页面上方和下方空白区域也能拖拽
+    var galleryPage = document.getElementById('page-gallery');
+    if (galleryPage) {
+        galleryPage.addEventListener('mousedown', function(e) {
+            // 排除灯箱和按钮
+            if (e.target.closest('.lightbox-close') || e.target.closest('#lightbox')) return;
+            isDragging = true;
+            dragStartX = e.clientX;
+            dragStartScroll = scrollPos;
+            wrapper.classList.add('dragging');
+            pauseAuto();
+        });
+    }
 
     window.addEventListener('mousemove', function(e) {
         if (!isDragging) return;
@@ -442,13 +528,23 @@ function renderGallery() {
         }
     });
 
-    // 触摸拖拽
+    // 触摸拖拽 - 扩大响应区域
     wrapper.addEventListener('touchstart', function(e) {
         isDragging = true;
         dragStartX = e.touches[0].clientX;
         dragStartScroll = scrollPos;
         pauseAuto();
     });
+
+    if (galleryPage) {
+        galleryPage.addEventListener('touchstart', function(e) {
+            if (e.target.closest('.lightbox-close') || e.target.closest('#lightbox')) return;
+            isDragging = true;
+            dragStartX = e.touches[0].clientX;
+            dragStartScroll = scrollPos;
+            pauseAuto();
+        });
+    }
 
     window.addEventListener('touchmove', function(e) {
         if (!isDragging) return;
@@ -646,4 +742,11 @@ function escapeHtml(str) {
     var div = document.createElement('div');
     div.appendChild(document.createTextNode(str));
     return div.innerHTML;
+}
+
+function shuffleArray(arr) {
+    for (var i = arr.length - 1; i > 0; i--) {
+        var j = Math.floor(Math.random() * (i + 1));
+        var tmp = arr[i]; arr[i] = arr[j]; arr[j] = tmp;
+    }
 }

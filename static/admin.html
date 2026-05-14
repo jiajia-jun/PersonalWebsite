@@ -530,6 +530,20 @@
                             </div>
                         </div>
 
+                        <div class="form-row full">
+                            <div class="form-field">
+                                <label for="eSkills">技能（每行：技能名|等级数值）</label>
+                                <textarea id="eSkills" rows="4" placeholder="Go|85&#10;JavaScript|80&#10;HTML/CSS|75"></textarea>
+                            </div>
+                        </div>
+
+                        <div class="form-row full">
+                            <div class="form-field">
+                                <label for="eTimeline">经历时间线（每行：时间段|标题|描述）</label>
+                                <textarea id="eTimeline" rows="4" placeholder="2024-至今|个人开发者|独立开发个人网站及开源项目&#10;2023-2024|学习阶段|系统学习 Go 语言"></textarea>
+                            </div>
+                        </div>
+
                         <div class="btn-row">
                             <button type="submit" class="docsy-btn docsy-btn-primary" style="padding:0.65rem 1.5rem;">保存修改</button>
                             <button type="button" class="docsy-btn docsy-btn-secondary" id="cancelEditBtn" style="padding:0.65rem 1.5rem;">取消</button>
@@ -629,6 +643,6 @@
     })();
     </script>
 
-    <script src="/static/js/admin.js"></script>
+    <script src="/static/js/admin.js?v=2"></script>
 </body>
 </html>

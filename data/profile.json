@@ -1,18 +1,46 @@
 {
   "name": "SheckHall",
   "title": "BYD",
-  "bio": "The lonely wanderer\nhello",
-  "avatar": "/static/my.jpg",
+  "bio": "The lonely wanderer",
+  "avatar": "/static/img/my.jpg",
   "email": "13789176472@163.com",
   "phone": "13789176472",
   "github": "https://github.com/jiajia-jun",
   "linkedin": "",
   "website": "",
-  "location": "",
+  "location": "湖南",
   "greeting": "你好，我是",
   "tagline": "欢迎来到我的个人主页",
-  "skills": null,
-  "timeline": null,
+  "skills": [
+    {
+      "name": "Git",
+      "level": 30
+    },
+    {
+      "name": "Cpp",
+      "level": 4
+    },
+    {
+      "name": "Golang",
+      "level": 9
+    },
+    {
+      "name": "VibeCoding",
+      "level": 20
+    }
+  ],
+  "timeline": [
+    {
+      "period": "2025-至今",
+      "title": "个人开发者",
+      "description": "开发自己喜欢的小东西"
+    },
+    {
+      "period": "2025.12-2026.2",
+      "title": "SearchKeyWord",
+      "description": "用于从文本文件中定位关键词的程序"
+    }
+  ],
   "interests": null,
   "stats": null
 }

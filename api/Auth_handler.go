@@ -22,7 +22,7 @@ func LoginUser(c *gin.Context) {
 		return
 	}
 
-	if dao.FindUser(lu.Username, lu.Password) {
+	if dao.ConfirmUser(lu.Username, lu.Password) {
 		token, errGetTkn := utils.GenerateToken(lu.Username)
 		if errGetTkn != nil {
 			c.JSON(http.StatusBadRequest, gin.H{

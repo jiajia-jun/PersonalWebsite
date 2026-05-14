@@ -124,10 +124,31 @@ function populateForm(p) {
     document.getElementById('eGithub').value = p.github || '';
     document.getElementById('eLinkedin').value = p.linkedin || '';
     document.getElementById('eWebsite').value = p.website || '';
+
+    document.getElementById('eSkills').value = (p.skills || []).map(function(s) {
+        return s.name + '|' + (s.level || 0);
+    }).join('\n');
+
+    document.getElementById('eTimeline').value = (p.timeline || []).map(function(t) {
+        return t.period + '|' + t.title + '|' + (t.description || '');
+    }).join('\n');
 }
 
 async function handleProfileUpdate(e) {
     e.preventDefault();
+
+    var skillsRaw = document.getElementById('eSkills').value.trim();
+    var skills = skillsRaw ? skillsRaw.split('\n').filter(function(l) { return l.trim(); }).map(function(line) {
+        var parts = line.split('|');
+        return { name: (parts[0] || '').trim(), level: parseInt(parts[1]) || 0 };
+    }) : [];
+
+    var timelineRaw = document.getElementById('eTimeline').value.trim();
+    var timeline = timelineRaw ? timelineRaw.split('\n').filter(function(l) { return l.trim(); }).map(function(line) {
+        var parts = line.split('|');
+        return { period: (parts[0] || '').trim(), title: (parts[1] || '').trim(), description: (parts[2] || '').trim() };
+    }) : [];
+
     var profile = {
         name: document.getElementById('eName').value.trim(),
         title: document.getElementById('eTitle').value.trim(),
@@ -140,7 +161,9 @@ async function handleProfileUpdate(e) {
         location: document.getElementById('eLocation').value.trim(),
         github: document.getElementById('eGithub').value.trim(),
         linkedin: document.getElementById('eLinkedin').value.trim(),
-        website: document.getElementById('eWebsite').value.trim()
+        website: document.getElementById('eWebsite').value.trim(),
+        skills: skills,
+        timeline: timeline
     };
 
     var token = localStorage.getItem('token');

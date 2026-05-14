@@ -629,12 +629,21 @@ body {
     line-height: 1.5;
 }
 
-/* 音乐按钮 */
-.music-btn {
+/* 音乐控制区 */
+.music-zone {
     position: fixed;
-    bottom: 24px;
-    right: 24px;
+    bottom: -44px;
+    right: 14px;
     z-index: 101;
+    width: 170px;
+    height: 170px;
+    border-radius: 50%;
+}
+
+.music-btn {
+    position: absolute;
+    bottom: 48px;
+    right: 0;
     width: 44px;
     height: 44px;
     border-radius: 50%;
@@ -647,13 +656,13 @@ body {
     align-items: center;
     justify-content: center;
     transition: all 0.3s ease;
+    z-index: 3;
 }
 
 .music-btn:hover {
     background: rgba(129, 140, 248, 0.5);
     border-color: #818cf8;
     color: #fff;
-    transform: scale(1.08);
 }
 
 .music-btn.playing {
@@ -662,24 +671,60 @@ body {
     color: #fff;
 }
 
-.music-tooltip {
-    position: fixed;
-    bottom: 76px;
-    right: 24px;
-    z-index: 101;
-    background: rgba(20, 20, 35, 0.92);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    color: #ccc;
-    padding: 0.4rem 0.75rem;
-    border-radius: 6px;
-    font-size: 0.78rem;
+/* 音乐轮盘 */
+.music-wheel {
+    position: absolute;
+    inset: 0;
     pointer-events: none;
     opacity: 0;
-    transition: opacity 0.3s ease;
-    white-space: nowrap;
+    transform: scale(0.4);
+    transition: opacity 0.25s ease, transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
-.music-tooltip.show { opacity: 1; }
+.music-zone:hover .music-wheel {
+    opacity: 1;
+    transform: scale(1);
+    pointer-events: auto;
+}
+
+.music-wheel-item {
+    position: absolute;
+    z-index: 4;
+    white-space: nowrap;
+    padding: 0.4rem 0.85rem;
+    border-radius: 20px;
+    background: rgba(20, 20, 35, 0.92);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: rgba(255,255,255,0.6);
+    font-size: 0.78rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.music-wheel-item:hover {
+    color: #fff;
+    background: rgba(129, 140, 248, 0.4);
+    border-color: #818cf8;
+    transform: scale(1.05);
+}
+
+.music-wheel-item.active {
+    color: #fff;
+    background: rgba(129, 140, 248, 0.3);
+    border-color: #818cf8;
+}
+
+/* 轮盘向左展开 */
+.music-wheel-item[data-track="0"] {
+    left: 0;
+    bottom: 96px;
+}
+
+.music-wheel-item[data-track="1"] {
+    left: 0;
+    bottom: 56px;
+}
 
 /* 弹球画布 */
 #ballCanvas {

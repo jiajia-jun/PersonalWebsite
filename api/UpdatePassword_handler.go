@@ -33,7 +33,7 @@ func UpdateUserPassword(c *gin.Context) {
 		return
 	}
 
-	if dao.FindUser(update.Username, update.OldPassword) {
+	if dao.ConfirmUser(update.Username, update.OldPassword) {
 		dao.UpdatePassword(update.Username, update.NewPassword)
 		c.JSON(http.StatusOK, gin.H{
 			"code":    http.StatusOK,

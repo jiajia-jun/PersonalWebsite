@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>个人主页</title>
-    <link rel="stylesheet" href="/static/css/docsy-styles.css">
-    <link rel="stylesheet" href="/static/css/showcase.css">
+    <link rel="stylesheet" href="/static/css/docsy-styles.css?v=8">
+    <link rel="stylesheet" href="/static/css/showcase.css?v=8">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -80,7 +80,7 @@
                 <div class="section-header">
                     <h2 class="section-title">相册</h2>
                     <div class="section-line"></div>
-                    <p class="section-sub">生活中的精彩瞬间</p>
+                    <p class="section-sub">不放弃我之所爱，不辜负爱我之人</p>
                 </div>
                 <div class="gallery-strip-wrapper" id="galleryStripWrapper">
                     <div class="gallery-strip" id="galleryStrip"></div>
@@ -127,20 +127,29 @@
 
     </main>
 
-    <!-- 音乐控制按钮 -->
-    <button class="music-btn" id="musicBtn" title="TAVOS - 涧">
-        <svg class="music-icon-play" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <polygon points="5 3 19 12 5 21 5 3"/>
-        </svg>
-        <svg class="music-icon-pause" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none">
-            <rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/>
-        </svg>
-    </button>
-    <div class="music-tooltip" id="musicTooltip">TAVOS - 涧</div>
+    <!-- 音乐控制区域 -->
+    <div class="music-zone" id="musicZone">
+        <div class="music-wheel" id="musicWheel">
+            <div class="music-wheel-item" data-track="0">
+                <span class="music-wheel-label">TAVOS - 涧</span>
+            </div>
+            <div class="music-wheel-item" data-track="1">
+                <span class="music-wheel-label">Toby Fox - His Theme</span>
+            </div>
+        </div>
+        <button class="music-btn" id="musicBtn">
+            <svg class="music-icon-play" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polygon points="5 3 19 12 5 21 5 3"/>
+            </svg>
+            <svg class="music-icon-pause" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none">
+                <rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/>
+            </svg>
+        </button>
+    </div>
 
     <!-- 弹球画布 -->
     <canvas id="ballCanvas"></canvas>
 
-    <script src="/static/js/home.js"></script>
+    <script src="/static/js/home.js?v=8"></script>
 </body>
 </html>

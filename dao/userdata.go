@@ -8,7 +8,7 @@ import (
 	"github.com/goccy/go-json"
 )
 
-const datapath = "E:\\test\\userdata.json"
+const datapath = "data/userdata.json"
 
 var database = map[string]string{}
 var lock sync.RWMutex
@@ -69,8 +69,8 @@ func AddUser(username string, password string) {
 	Storedata()
 }
 
-// FindUser 验证用户
-func FindUser(username string, password string) bool {
+// ConfirmUser 验证用户
+func ConfirmUser(username string, password string) bool {
 	lock.Lock()
 	defer lock.Unlock()
 	if pwd, ok := database[username]; ok { // 先判断是否存在用户（Go 里查 map 时，返回 值 和 是否存在 两个）
