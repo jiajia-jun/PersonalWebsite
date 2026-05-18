@@ -37,6 +37,9 @@ func InitRouter() *gin.Engine {
 
 	// 公开 API
 	router.GET("/api/profile", GetPublicProfile)
+	router.GET("/api/messages", GetMessages)
+	router.POST("/api/messages", CreateMessage)
+	router.POST("/api/messages/:id/like", LikeMessage)
 	router.POST("/api/login", LoginUser)
 	router.POST("/api/updatepassword", UpdateUserPassword)
 

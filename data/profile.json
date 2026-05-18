@@ -14,7 +14,7 @@
   "skills": [
     {
       "name": "Git",
-      "level": 30
+      "level": 15
     },
     {
       "name": "Cpp",
@@ -22,11 +22,11 @@
     },
     {
       "name": "Golang",
-      "level": 9
+      "level": 6
     },
     {
       "name": "VibeCoding",
-      "level": 20
+      "level": 10
     }
   ],
   "timeline": [
