@@ -93,6 +93,7 @@ function showEditorView(username) {
     document.getElementById('editorView').classList.remove('hidden');
     document.getElementById('adminUsername').textContent = '管理员：' + escapeHtml(username);
     loadCurrentProfile();
+    loadMessageList();
 }
 
 // === 个人信息 ===
@@ -271,6 +272,82 @@ async function handleEditorPasswordChange() {
         }
     } catch (err) {
         showMessage('editorPasswordMessage', '无法连接到服务器', 'error');
+    }
+}
+
+// === 留言管理 ===
+
+async function loadMessageList() {
+    var container = document.getElementById('messageMgmtList');
+    try {
+        var res = await fetch('/api/messages');
+        var data = await res.json();
+        if (data.code === 200) {
+            renderMessageList(data.data);
+        } else {
+            container.innerHTML = '<div class="message-mgmt-empty">加载留言失败</div>';
+        }
+    } catch (err) {
+        container.innerHTML = '<div class="message-mgmt-empty">无法连接到服务器</div>';
+    }
+}
+
+function renderMessageList(messages) {
+    var container = document.getElementById('messageMgmtList');
+    if (!messages || messages.length === 0) {
+        container.innerHTML = '<div class="message-mgmt-empty">暂无留言</div>';
+        return;
+    }
+
+    var html = '';
+    for (var i = 0; i < messages.length; i++) {
+        var msg = messages[i];
+        var shortId = msg.id.substring(0, 8);
+        var contentPreview = msg.content.length > 30 ? msg.content.substring(0, 30) + '...' : msg.content;
+        html += '<div class="message-row" data-id="' + escapeHtml(msg.id) + '">' +
+            '<div class="message-row-meta">' +
+                '<div class="msg-name">' + escapeHtml(msg.name) + '</div>' +
+                '<div class="msg-time">' + escapeHtml(msg.timestamp) + '</div>' +
+            '</div>' +
+            '<div class="message-row-content">' + escapeHtml(contentPreview) + '</div>' +
+            '<button class="delete-btn" onclick="handleDeleteMessage(\'' + escapeHtml(msg.id) + '\')">删除</button>' +
+        '</div>';
+    }
+    container.innerHTML = html;
+}
+
+async function handleDeleteMessage(id) {
+    if (!confirm('确定删除这条留言吗？此操作不可恢复。')) {
+        return;
+    }
+
+    var token = localStorage.getItem('token');
+    try {
+        var res = await fetch('/api/messages/' + id, {
+            method: 'DELETE',
+            headers: { 'Authorization': 'Bearer ' + token }
+        });
+        var data = await res.json();
+        if (data.code === 200) {
+            var row = document.querySelector('.message-row[data-id="' + id + '"]');
+            if (row) {
+                row.remove();
+            }
+            // 检查是否删光了
+            if (!document.querySelector('.message-row')) {
+                document.getElementById('messageMgmtList').innerHTML = '<div class="message-mgmt-empty">暂无留言</div>';
+            }
+        } else if (res.status === 401 || data.code === 401) {
+            localStorage.removeItem('token');
+            showLoginView('登录已过期，请重新登录');
+        } else if (res.status === 404 || data.code === 404) {
+            alert('留言不存在，可能已被删除');
+            loadMessageList();
+        } else {
+            alert(data.message || '删除失败');
+        }
+    } catch (err) {
+        alert('无法连接到服务器');
     }
 }
 

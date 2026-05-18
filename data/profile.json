@@ -14,7 +14,7 @@
   "skills": [
     {
       "name": "Git",
-      "level": 15
+      "level": 10
     },
     {
       "name": "Cpp",
@@ -22,11 +22,23 @@
     },
     {
       "name": "Golang",
-      "level": 6
+      "level": 5
     },
     {
       "name": "VibeCoding",
       "level": 10
+    },
+    {
+      "name": "摄影",
+      "level": 6
+    },
+    {
+      "name": "吃好吃的",
+      "level": 100
+    },
+    {
+      "name": "玩好玩的",
+      "level": 100
     }
   ],
   "timeline": [

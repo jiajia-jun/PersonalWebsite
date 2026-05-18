@@ -377,6 +377,90 @@
 
         .hidden { display: none !important; }
 
+        /* 留言管理卡片 */
+        .message-mgmt-card {
+            margin-top: 1.5rem;
+        }
+
+        .message-mgmt-card .card-body {
+            padding: 0 1.75rem 1.5rem;
+        }
+
+        .message-row {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.7rem 0.85rem;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            margin-bottom: 0.5rem;
+            transition: background 0.15s;
+            background: #fff;
+        }
+
+        .message-row:hover {
+            background: #fafafa;
+        }
+
+        .message-row-meta {
+            flex-shrink: 0;
+            min-width: 70px;
+            max-width: 100px;
+        }
+
+        .message-row-meta .msg-name {
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: var(--text);
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .message-row-meta .msg-time {
+            font-size: 0.72rem;
+            color: #999;
+            margin-top: 1px;
+            white-space: nowrap;
+        }
+
+        .message-row-content {
+            flex: 1;
+            min-width: 0;
+            font-size: 0.84rem;
+            color: var(--text-secondary);
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .message-row .delete-btn {
+            flex-shrink: 0;
+            padding: 0.3rem 0.65rem;
+            border-radius: 6px;
+            border: 1px solid #fecaca;
+            background: #fef2f2;
+            color: #dc2626;
+            font-size: 0.78rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.15s;
+            white-space: nowrap;
+        }
+
+        .message-row .delete-btn:hover {
+            background: #dc2626;
+            color: #fff;
+            border-color: #dc2626;
+        }
+
+        .message-mgmt-empty {
+            text-align: center;
+            color: #999;
+            padding: 1.5rem 0;
+            font-size: 0.85rem;
+        }
+
         @media (max-width: 520px) {
             .form-row { grid-template-columns: 1fr; }
             .card-header { padding: 2rem 1.5rem 1rem; }
@@ -561,6 +645,16 @@
                         </div>
                         <button type="button" class="docsy-btn docsy-btn-secondary" id="editorUpdatePasswordBtn">修改密码</button>
                         <div id="editorPasswordMessage" class="message"></div>
+                    </div>
+                </div>
+
+                <!-- 留言管理卡片 -->
+                <div class="admin-card message-mgmt-card">
+                    <div class="admin-bar">
+                        <span class="admin-bar-user" style="color:#1a1a2e;font-weight:600;">留言管理</span>
+                    </div>
+                    <div class="card-body" id="messageMgmtList">
+                        <div class="message-mgmt-empty">加载中...</div>
                     </div>
                 </div>
             </div>

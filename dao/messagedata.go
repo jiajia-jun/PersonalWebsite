@@ -39,16 +39,17 @@ func LoadMessages() {
 	fmt.Println("留言数据加载成功")
 }
 
-// SaveMessages 保存留言数据到文件
+// SaveMessages 保存留言数据到文件（自带读锁，可在锁外调用）
 func SaveMessages() {
-	os.MkdirAll("./data", 0755)
-
-	jsonData, err := json.MarshalIndent(messageData, "", "  ")
+	messageLock.RLock()
+	jsonData, err := json.Marshal(messageData)
+	messageLock.RUnlock()
 	if err != nil {
 		fmt.Println("留言数据序列化失败:", err.Error())
 		return
 	}
 
+	os.MkdirAll("./data", 0755)
 	err = os.WriteFile(messageDataPath, jsonData, 0644)
 	if err != nil {
 		fmt.Println(err.Error())
@@ -68,22 +69,38 @@ func GetMessages() []model.Message {
 // AddMessage 添加一条留言
 func AddMessage(msg model.Message) {
 	messageLock.Lock()
-	defer messageLock.Unlock()
 	messageData = append(messageData, msg)
+	messageLock.Unlock()
 	SaveMessages()
+}
+
+// DeleteMessage 按 ID 删除留言，返回是否成功
+func DeleteMessage(id string) bool {
+	messageLock.Lock()
+	for i := range messageData {
+		if messageData[i].ID == id {
+			messageData = append(messageData[:i], messageData[i+1:]...)
+			messageLock.Unlock()
+			SaveMessages()
+			return true
+		}
+	}
+	messageLock.Unlock()
+	return false
 }
 
 // LikeMessage 点赞留言，返回更新后的留言
 func LikeMessage(id string) (model.Message, bool) {
 	messageLock.Lock()
-	defer messageLock.Unlock()
-
 	for i := range messageData {
 		if messageData[i].ID == id {
 			messageData[i].Likes++
+			result := messageData[i]
+			messageLock.Unlock()
 			SaveMessages()
-			return messageData[i], true
+			return result, true
 		}
 	}
+	messageLock.Unlock()
 	return model.Message{}, false
 }

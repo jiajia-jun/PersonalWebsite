@@ -1,16 +1,1 @@
-[
-  {
-    "id": "b0e1e37e-8be2-4354-be1f-e1a32dd0a241",
-    "name": "SheckHall",
-    "content": "Hello World",
-    "timestamp": "2026-05-14 12:37:24",
-    "likes": 4
-  },
-  {
-    "id": "adf9fbb6-58f1-424b-95fc-4512f549107c",
-    "name": "zlx",
-    "content": "太有实力了orz",
-    "timestamp": "2026-05-14 12:44:01",
-    "likes": 43
-  }
-]
+[{"id":"adf9fbb6-58f1-424b-95fc-4512f549107c","name":"zlx","content":"太有实力了orz","timestamp":"2026-05-14 12:44:01","likes":44},{"id":"3856ccca-376e-4aa1-adf9-1ba2342a72c7","name":"wjr","content":"真的感觉好厉害","timestamp":"2026-05-18 23:29:41","likes":66}]

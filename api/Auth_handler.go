@@ -17,7 +17,7 @@ func LoginUser(c *gin.Context) {
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"code":    http.StatusBadRequest,
-			"message": "输入有效用户名和密码",
+			"message": "输入有效用户名和密码（密码最小长度为八位数）",
 		})
 		return
 	}
@@ -39,7 +39,7 @@ func LoginUser(c *gin.Context) {
 	} else {
 		c.JSON(http.StatusUnauthorized, gin.H{
 			"code":    http.StatusUnauthorized,
-			"message": "用户名或密码错误",
+			"message": "用户名或密码错误（密码最小长度需要八位数）",
 		})
 	}
 }

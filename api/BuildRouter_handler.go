@@ -49,6 +49,7 @@ func InitRouter() *gin.Engine {
 	{
 		authGroup.PUT("/profile", UpdateProfile)
 		authGroup.GET("/admin/check", CheckAdminAuth)
+		authGroup.DELETE("/messages/:id", DeleteMessage)
 	}
 
 	return router

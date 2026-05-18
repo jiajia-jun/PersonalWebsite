@@ -40,6 +40,22 @@ func LikeMessage(c *gin.Context) {
 	})
 }
 
+// DeleteMessage 删除留言（需认证）
+func DeleteMessage(c *gin.Context) {
+	id := c.Param("id")
+	if id == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"code": 400, "message": "留言ID不能为空"})
+		return
+	}
+
+	if !dao.DeleteMessage(id) {
+		c.JSON(http.StatusNotFound, gin.H{"code": 404, "message": "留言不存在"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"code": 200, "message": "删除成功"})
+}
+
 // CreateMessage 创建留言
 func CreateMessage(c *gin.Context) {
 	var req struct {
