@@ -1,0 +1,6 @@
+ssl/
+.claude
+*.crt
+*.pem
+*.key
+CLAUDE.md

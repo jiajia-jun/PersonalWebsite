@@ -3,6 +3,8 @@ package main
 import (
 	"Goland/api"
 	"Goland/dao"
+	"log"
+	"os"
 )
 
 func main() {
@@ -12,8 +14,26 @@ func main() {
 
 	r := api.InitRouter()
 
-	_ = r.Run("10.17.108.76:8080") // 启动服务器
+	// 证书路径
+	crtPath := "ssl/server.crt"
+	keyPath := "ssl/server.key"
+	_, errC := os.Stat(crtPath)
+	_, errK := os.Stat(keyPath)
 
+	if errC != nil || errK != nil {
+		log.Println("启用HTTP")
+		err := r.Run(":8080") // http启动
+		if err != nil {
+			log.Fatal(err)
+		}
+
+	} else { // https启动
+		log.Println("启用HTTPS")
+		err := r.RunTLS(":8443", "ssl/server.crt", "ssl/server.key")
+		if err != nil {
+			log.Fatal(err)
+		}
+	}
 	r.Static("/static", "./static") // 静态资源配置
 
 }
