@@ -42,10 +42,7 @@ func Storedata() {
 	//defer lock.Unlock()
 	//上面是错误代码
 
-	//用 json.MarshalIndent() 完成“Go map → JSON 字节”的转换（序列化）
-	// 参数1：要转换的内存数据（userDB，map 类型）
-	// 参数2：JSON 前缀（空字符串，无前缀）
-	// 参数3：JSON 缩进（"  "，两个空格，让生成的 JSON 文件格式工整，方便手动查看）
+	// json.MarshalIndent() 完成“Go map → JSON 字节”的转换
 	jsonData, err := json.MarshalIndent(database, "", "  ")
 	if err != nil {
 		fmt.Println("错误：转换用户数据为 JSON 格式失败，原因：", err.Error())

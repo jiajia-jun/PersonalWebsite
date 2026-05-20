@@ -42,19 +42,22 @@ func LoadMessages() {
 // SaveMessages 保存留言数据到文件（自带读锁，可在锁外调用）
 func SaveMessages() {
 	messageLock.RLock()
-	jsonData, err := json.Marshal(messageData)
+	jsonData, err := json.MarshalIndent(messageData, "", "  ")
 	messageLock.RUnlock()
 	if err != nil {
 		fmt.Println("留言数据序列化失败:", err.Error())
 		return
 	}
 
-	os.MkdirAll("./data", 0755)
-	err = os.WriteFile(messageDataPath, jsonData, 0644)
+	//os.MkdirAll("./data", 0755)
+	//err = os.WriteFile(messageDataPath, jsonData, 0644)
+	file, err := os.OpenFile(messageDataPath, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0666)
 	if err != nil {
 		fmt.Println(err.Error())
 		return
 	}
+	defer file.Close()
+	file.Write(jsonData)
 }
 
 // GetMessages 获取所有留言（返回副本）

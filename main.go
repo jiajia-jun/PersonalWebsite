@@ -29,11 +29,10 @@ func main() {
 
 	} else { // https启动
 		log.Println("启用HTTPS")
-		err := r.RunTLS(":8443", "ssl/server.crt", "ssl/server.key")
+		err := r.RunTLS("10.17.88.210:8443", "ssl/server.crt", "ssl/server.key")
 		if err != nil {
 			log.Fatal(err)
 		}
 	}
-	r.Static("/static", "./static") // 静态资源配置
 
 }
