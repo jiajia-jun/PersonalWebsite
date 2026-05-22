@@ -27,7 +27,12 @@
       "Bash(git rm *)",
       "Bash(git commit -m ' *)",
       "Bash(taskkill //F //IM main.exe)",
-      "Bash(go get *)"
+      "Bash(go get *)",
+      "Bash(go run *)",
+      "Bash(rm static/image/*.jpg)",
+      "Bash(go mod *)",
+      "Bash(rm convert_webp.go)",
+      "Bash(python3 -m json.tool)"
     ]
   }
 }

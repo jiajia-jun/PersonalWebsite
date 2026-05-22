@@ -4,7 +4,7 @@
     "name": "zlx",
     "content": "太有实力了orz",
     "timestamp": "2026-05-14 12:44:01",
-    "likes": 51
+    "likes": 156
   },
   {
     "id": "3856ccca-376e-4aa1-adf9-1ba2342a72c7",
@@ -18,13 +18,27 @@
     "name": "劳达",
     "content": "非常厉害",
     "timestamp": "2026-05-19 19:33:06",
-    "likes": 9
+    "likes": 14
   },
   {
     "id": "dd800aef-01e3-4bd5-bb3d-c3bfdd32670d",
     "name": "hutdg",
     "content": "我爱你bro",
     "timestamp": "2026-05-19 21:21:40",
-    "likes": 9
+    "likes": 13
+  },
+  {
+    "id": "e6a8456d-001e-4b05-8c86-dbe80333a4da",
+    "name": "zlx",
+    "content": "不管 有我熬夜的功劳 战损两根头发",
+    "timestamp": "2026-05-23 00:32:00",
+    "likes": -102
+  },
+  {
+    "id": "d9dc4b51-ee8a-4f4f-8aae-68370acf7604",
+    "name": "SheckHall",
+    "content": "我把图片转成webp了，现在图片加载速度应该会快一点点",
+    "timestamp": "2026-05-23 00:56:16",
+    "likes": 0
   }
 ]

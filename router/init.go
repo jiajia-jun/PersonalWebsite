@@ -1,9 +1,9 @@
 package router
 
 import (
-	"webproject/api"
-	"fmt"
+	"log"
 	"os"
+	"webproject/api"
 
 	"webproject/middleware"
 
@@ -21,9 +21,9 @@ func InitRouter() *gin.Engine {
 	const staticPath = "./static"
 
 	if _, err := os.Stat(staticPath); os.IsNotExist(err) {
-		fmt.Printf("警告: 静态文件目录不存在: %s\n", staticPath)
+		log.Println("静态文件目录不存在")
 	} else {
-		fmt.Printf("静态文件目录存在\n")
+		log.Println("静态文件目录存在")
 	}
 
 	// 静态文件映射
@@ -41,6 +41,7 @@ func InitRouter() *gin.Engine {
 	// 公开 API
 	router.GET("/api/profile", api.GetPublicProfile)
 	router.GET("/api/messages", api.GetMessages)
+	router.GET("/api/images", api.GetImage)
 	router.POST("/api/messages", api.CreateMessage)
 	router.POST("/api/messages/:id/like", api.LikeMessage)
 	router.POST("/api/login", api.LoginUser)

@@ -5,7 +5,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     setupTypewriter();
     setupParticles();
     setupMusic();
-    renderGallery();
+    await renderGallery();
     setupBouncingBalls();
     setupMessages();
 });
@@ -446,7 +446,7 @@ function setupMusic() {
 }
 
 // ==================== 相册 - 水平滚动 ====================
-function renderGallery() {
+async function renderGallery() {
     var strip = document.getElementById('galleryStrip');
     var wrapper = document.getElementById('galleryStripWrapper');
     var lightbox = document.getElementById('lightbox');
@@ -455,8 +455,24 @@ function renderGallery() {
 
     if (!strip || !wrapper) return;
 
-    // 图片文件名列表 - 随机洗牌
-    var imageFiles = ['51.jpg','52.jpg','53.jpg','56.jpg','57.jpg','58.jpg','67.jpg','68.jpg','69.jpg','70.jpg','71.jpg','72.jpg','73.jpg','74.jpg','75.jpg','76.jpg'];
+    strip.innerHTML = '<div style="text-align:center;color:rgba(200,200,220,0.4);padding:2rem;">加载中...</div>';
+
+    var imageFiles = [];
+    try {
+        var res = await fetch('/api/images');
+        var result = await res.json();
+        if (result.code === 200 && result.imageList) {
+            imageFiles = result.imageList.map(function(item) { return item.imageName; });
+        }
+    } catch (err) {
+        console.error('加载图片列表失败:', err);
+    }
+
+    if (imageFiles.length === 0) {
+        strip.innerHTML = '<div style="text-align:center;color:rgba(200,200,220,0.4);padding:2rem;">暂无图片</div>';
+        return;
+    }
+
     shuffleArray(imageFiles);
 
     // 渲染图片（复制两份实现无缝循环）

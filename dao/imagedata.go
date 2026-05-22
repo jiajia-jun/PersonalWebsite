@@ -2,6 +2,8 @@ package dao
 
 import (
 	"os"
+	"path/filepath"
+	"strings"
 	"webproject/model"
 )
 
@@ -15,15 +17,18 @@ func GetImage() ([]model.ImageItem, error) {
 
 	var imagesList []model.ImageItem
 	for _, file := range files {
-		if file.IsDir() { // 不读取子文件夹
+		if file.IsDir() {
 			continue
-		} else {
-			name := model.ImagePath + file.Name()
-			// 添加图片对象信息
-			imagesList = append(imagesList, model.ImageItem{
-				ImageName: name,
-			})
 		}
+		// 判断是否为图片类型
+		ext := strings.ToLower(filepath.Ext(file.Name()))
+		if ext != ".jpg" && ext != ".jpeg" && ext != ".png" && ext != ".webp" && ext != ".gif" {
+			continue
+		}
+		// 添加图片item
+		imagesList = append(imagesList, model.ImageItem{
+			ImageName: file.Name(),
+		})
 	}
 	return imagesList, nil
 }
