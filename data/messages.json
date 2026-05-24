@@ -18,7 +18,7 @@
     "name": "劳达",
     "content": "非常厉害",
     "timestamp": "2026-05-19 19:33:06",
-    "likes": 14
+    "likes": 15
   },
   {
     "id": "dd800aef-01e3-4bd5-bb3d-c3bfdd32670d",
@@ -37,7 +37,7 @@
   {
     "id": "d9dc4b51-ee8a-4f4f-8aae-68370acf7604",
     "name": "SheckHall",
-    "content": "我把图片转成webp了，现在图片加载速度应该会快一点点",
+    "content": "我把图片转成webp了，现在图片加载速度应该会快一点点，我打算后面加一个先展示略缩图，点进去再展示原图的功能",
     "timestamp": "2026-05-23 00:56:16",
     "likes": 0
   }

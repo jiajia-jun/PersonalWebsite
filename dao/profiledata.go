@@ -23,24 +23,18 @@ func LoadProfile() {
 			profileData = model.Profile{
 				Name:     "你的姓名",
 				Title:    "你的职位/头衔",
-				Bio:      "在这里写一段个人简介，介绍你的背景、兴趣和专长。",
+				Bio:      "在这里写一段个人简介",
 				Greeting: "你好，我是",
 				Tagline:  "欢迎来到我的个人主页",
 				Skills: []model.Skill{
-					{Name: "Go", Level: 85},
-					{Name: "JavaScript", Level: 80},
-					{Name: "HTML/CSS", Level: 75},
-					{Name: "Docker", Level: 60},
+					{Name: "name", Level: 0},
 				},
 				Timeline: []model.TimelineItem{
-					{Period: "2024-至今", Title: "个人开发者", Description: "独立开发个人网站及开源项目"},
-					{Period: "2023-2024", Title: "学习阶段", Description: "系统学习 Go 语言和 Web 开发技术栈"},
+					{Period: "period", Title: "title", Description: "description"},
 				},
-				Interests: []string{"开源", "摄影", "音乐", "旅行", "游戏", "阅读"},
+				Interests: []string{"interesting"},
 				Stats: []model.Stat{
-					{Label: "项目经验", Value: "3年"},
-					{Label: "完成项目", Value: "10+"},
-					{Label: "技术栈", Value: "6个"},
+					{Label: "label", Value: "value"},
 				},
 			}
 			SaveProfile()

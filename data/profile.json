@@ -2,7 +2,7 @@
   "name": "SheckHall",
   "title": "BYD",
   "bio": "The lonely wanderer\n(To me,you seem like someone who works really hard---Lan)",
-  "avatar": "/static/img/my.jpg",
+  "avatar": "./static/img/my.jpg",
   "email": "13789176472@163.com",
   "phone": "13789176472",
   "github": "https://github.com/jiajia-jun",
