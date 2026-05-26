@@ -4,7 +4,6 @@ import (
 	"log"
 	"os"
 	"webproject/api"
-
 	"webproject/middleware"
 
 	"github.com/gin-gonic/gin"
@@ -38,15 +37,22 @@ func InitRouter() *gin.Engine {
 		c.File("./static/admin.html")
 	})
 
-	// 公开 API
+	// 公开信息路由
 	router.GET("/api/profile", api.GetPublicProfile)
+
+	// 图像路由
+	router.GET("/api/images", api.GetImageName)
+	router.GET("/api/images/thumb/:imagename", api.GetThumbNail)
+	router.GET("/api/images/:imagename", api.GetImageData)
+
+	// 留言路由
 	router.GET("/api/messages", api.GetMessages)
-	router.GET("/api/images", api.GetImage)
 	router.POST("/api/messages", api.CreateMessage)
 	router.POST("/api/messages/:id/like", api.LikeMessage)
+
+	// 后台路由
 	router.POST("/api/login", api.LoginUser)
 	router.POST("/api/updatepassword", api.UpdateUserPassword)
-
 	// 受保护的 API - 需要 JWT 验证
 	authGroup := router.Group("/api")
 	authGroup.Use(middleware.AuthMiddleware())

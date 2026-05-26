@@ -32,7 +32,8 @@
       "Bash(rm static/image/*.jpg)",
       "Bash(go mod *)",
       "Bash(rm convert_webp.go)",
-      "Bash(python3 -m json.tool)"
+      "Bash(python3 -m json.tool)",
+      "Bash(taskkill //f //im main.exe)"
     ]
   }
 }

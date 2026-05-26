@@ -11,6 +11,7 @@ func main() {
 	dao.Pickdata()
 	dao.LoadProfile()
 	dao.LoadMessages()
+	dao.InitImageCache()
 
 	r := router.InitRouter()
 

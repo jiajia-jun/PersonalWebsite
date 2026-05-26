@@ -1,8 +1,13 @@
 ssl/
 .claude/
+OTH_Plan/
+OTH_TestResult/
+OTH_Tech/
 *.crt
 *.pem
 *.key
 *.jpg
+*.webp
 CLAUDE.md
 start.bat
+

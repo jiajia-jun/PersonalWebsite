@@ -83,8 +83,8 @@ func DeleteMessage(id string) bool {
 	for i := range messageData {
 		if messageData[i].ID == id {
 			messageData = append(messageData[:i], messageData[i+1:]...)
-			messageLock.Unlock()
 			SaveMessages()
+			messageLock.Unlock()
 			return true
 		}
 	}

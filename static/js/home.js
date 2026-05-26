@@ -479,13 +479,29 @@ async function renderGallery() {
     var itemsHtml = '';
     for (var r = 0; r < 2; r++) {
         for (var i = 0; i < imageFiles.length; i++) {
-            var src = '/static/image/' + imageFiles[i];
-            itemsHtml += '<div class="gallery-item" data-src="' + src + '" data-index="' + i + '">' +
-                '<img src="' + src + '" alt="相册图片 ' + (i + 1) + '" loading="lazy">' +
+            var thumbSrc = '/api/images/thumb/' + imageFiles[i];
+            var origSrc = '/api/images/' + imageFiles[i];
+            itemsHtml += '<div class="gallery-item" data-src="' + origSrc + '" data-thumb="' + thumbSrc + '" data-index="' + i + '">' +
+                '<img src="' + thumbSrc + '" alt="相册图片 ' + (i + 1) + '">' +
             '</div>';
         }
     }
     strip.innerHTML = itemsHtml;
+
+    // 淡入动画
+    var imgs = strip.querySelectorAll('img');
+    imgs.forEach(function(img) {
+        if (img.complete) {
+            img.classList.add('loaded');
+        } else {
+            img.addEventListener('load', function() {
+                img.classList.add('loaded');
+            });
+            img.addEventListener('error', function() {
+                img.classList.add('loaded');
+            });
+        }
+    });
 
     // 自动滚动与拖拽
     var scrollPos = 0;
@@ -586,10 +602,17 @@ async function renderGallery() {
         if (!item) return;
         // 如果刚拖拽完，忽略点击
         if (Math.abs(scrollPos - dragStartScroll) > 5) return;
-        var src = item.getAttribute('data-src');
-        lightboxImg.src = src;
+        var origSrc = item.getAttribute('data-src');
+        var thumbSrc = item.getAttribute('data-thumb');
+        lightboxImg.src = thumbSrc;
         lightboxImg.alt = '相册图片';
         lightbox.classList.add('show');
+        // 后台加载原图，就绪后硬切
+        var fullImg = new Image();
+        fullImg.onload = function() {
+            lightboxImg.src = origSrc;
+        };
+        fullImg.src = origSrc;
     });
 
     lightboxClose.addEventListener('click', function() {

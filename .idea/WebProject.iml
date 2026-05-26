@@ -3,7 +3,10 @@
   <component name="Go" enabled="true" />
   <component name="NewModuleRootManager">
     <content url="file://$MODULE_DIR$">
+      <excludeFolder url="file://$MODULE_DIR$/OTH_Plan" />
+      <excludeFolder url="file://$MODULE_DIR$/OTH_TestResult" />
       <excludeFolder url="file://$MODULE_DIR$/ssl" />
+      <excludeFolder url="file://$MODULE_DIR$/OTH_Tech" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

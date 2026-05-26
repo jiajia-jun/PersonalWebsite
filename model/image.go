@@ -1,7 +1,7 @@
 package model
 
 const (
-	ImagePath = "static/image"
+	ImagePath = "data/image"
 )
 
 // ImageItem  图片对象项
