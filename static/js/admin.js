@@ -7,8 +7,6 @@ document.addEventListener('DOMContentLoaded', init);
 function init() {
     // 登录表单
     document.getElementById('loginForm').addEventListener('submit', handleLogin);
-    document.getElementById('showPasswordPanel').addEventListener('click', togglePasswordPanel);
-    document.getElementById('updatePasswordBtn').addEventListener('click', handlePasswordChange);
 
     // 编辑器
     document.getElementById('profileForm').addEventListener('submit', handleProfileUpdate);

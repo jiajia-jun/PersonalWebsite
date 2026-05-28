@@ -10,7 +10,7 @@ import (
 func Cache() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		if strings.HasPrefix(c.Request.URL.Path, "/static") {
-			c.Header("Cache-Control", "public,max-age=31536000") // 一年的缓存时间
+			c.Header("Cache-Control", "public,max-age=604800") // 一周的缓存时间
 		} else if strings.HasPrefix(c.Request.URL.Path, "/api/images") {
 			c.Header("Cache-Control", "public,max-age=3600") // 一小时的缓存时间
 		}

@@ -29,6 +29,33 @@ body {
     display: flex;
     flex-direction: column;
     padding: 1.5rem 0;
+    transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* 侧边栏收起状态 - 仅留 6px 边缘可见作为触发提示 */
+.sidebar.sidebar-collapsed {
+    transform: translateX(calc(-100% + 6px));
+}
+
+/* 收起时边缘指示条 */
+.sidebar.sidebar-collapsed::after {
+    content: '';
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 3px;
+    height: 48px;
+    border-radius: 0 3px 3px 0;
+    background: linear-gradient(180deg, transparent, rgba(129, 140, 248, 0.5), transparent);
+    opacity: 0;
+    animation: edgePulse 2.5s ease-in-out 0.5s forwards;
+}
+
+@keyframes edgePulse {
+    0% { opacity: 0; }
+    50% { opacity: 1; }
+    100% { opacity: 0.5; }
 }
 
 .sidebar-brand {
@@ -125,6 +152,11 @@ body {
     position: relative;
     z-index: 1;
     min-height: 100vh;
+    transition: margin-left 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.main-content.main-content-expanded {
+    margin-left: 6px;
 }
 
 /* 页面切换 */
@@ -205,6 +237,20 @@ body {
 
 @keyframes fadeUpIn {
     to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeIn {
+    to { opacity: 1; }
+}
+
+@keyframes lineStretchIn {
+    from { transform: scaleX(0); }
+    to { transform: scaleX(16); }
+}
+
+@keyframes lineShrinkToNormal {
+    from { transform: scaleX(16); }
+    to { transform: scaleX(1); }
 }
 
 .hero-cta {
@@ -329,6 +375,53 @@ body {
     font-size: 0.8rem;
     color: rgba(200, 200, 220, 0.5);
     word-break: break-all;
+}
+
+/* 相册 - 入场动画 */
+#page-gallery.gallery-intro .section-header {
+    transform: translateY(calc(40vh - 5rem));
+    opacity: 0;
+    animation: fadeIn 0.5s ease-out 0.1s forwards;
+    transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+#page-gallery.gallery-intro .section-title {
+    font-size: 4rem;
+    font-weight: 800;
+    color: #fff;
+    letter-spacing: -0.02em;
+    transition: font-size 0.8s cubic-bezier(0.4, 0, 0.2, 1),
+                color 0.8s ease-out;
+}
+
+#page-gallery.gallery-intro .section-line {
+    animation: lineStretchIn 0.7s cubic-bezier(0.25, 0, 0.15, 1) 0.2s forwards;
+    transform-origin: center;
+}
+
+#page-gallery.gallery-intro .gallery-strip-wrapper,
+#page-gallery.gallery-intro .gallery-lightbox {
+    opacity: 0;
+}
+
+#page-gallery.gallery-ready .section-header {
+    transform: translateY(0);
+}
+
+#page-gallery.gallery-ready .section-title {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #e0e0e0;
+}
+
+#page-gallery.gallery-ready .section-line {
+    animation: lineShrinkToNormal 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    transform-origin: center;
+}
+
+#page-gallery.gallery-ready .gallery-strip-wrapper {
+    opacity: 1;
+    transition: opacity 0.8s ease-out;
 }
 
 /* 相册 - 水平滚动 */
@@ -923,6 +1016,8 @@ body {
     .sidebar-avatar { width: 32px; height: 32px; font-size: 0.85rem; }
 
     .main-content { margin-left: 56px; }
+    .main-content.main-content-expanded { margin-left: 6px; }
+    .sidebar.sidebar-collapsed { transform: translateX(calc(-100% + 6px)); }
 
     .hero-name { font-size: 2.2rem; }
     .hero-greeting { font-size: 1rem; }

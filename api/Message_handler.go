@@ -62,6 +62,7 @@ func CreateMessage(c *gin.Context) {
 		Name    string `json:"name" binding:"required"`
 		Content string `json:"content" binding:"required"`
 	}
+
 	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"code":    400,

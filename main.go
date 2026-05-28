@@ -15,7 +15,7 @@ func main() {
 
 	r := router.InitRouter()
 
-	// 证书路径
+	// 校园网启动
 	//crtPath := "ssl/server.crt"
 	//keyPath := "ssl/server.key"
 	//_, errC := os.Stat(crtPath)
@@ -30,12 +30,13 @@ func main() {
 	//
 	//} else { // https启动
 	//	log.Println("启用HTTPS")
-	//	err := r.RunTLS("localhost:8443", crtPath, keyPath)
+	//	err := r.RunTLS("10.17.42.43:8443", crtPath, keyPath)
 	//	if err != nil {
 	//		log.Fatal(err)
 	//	}
 	//}
 
+	// RadminLan启动
 	lcrtPath := "ssl/Radmin_LAN/server_LAN.crt"
 	lkeyPath := "ssl/Radmin_LAN/server_LAN.key"
 	_, lerrC := os.Stat(lcrtPath)
@@ -50,8 +51,8 @@ func main() {
 
 	} else { // https启动
 		log.Println("启用HTTPS")
-		//err := r.RunTLS("localhost:8443", lcrtPath, lkeyPath)
-		err := r.RunTLS("26.126.204.192:8443", lcrtPath, lkeyPath)
+		err := r.RunTLS("localhost:8443", lcrtPath, lkeyPath)
+		//err := r.RunTLS("26.126.204.192:8443", lcrtPath, lkeyPath)
 
 		if err != nil {
 			log.Fatal(err)

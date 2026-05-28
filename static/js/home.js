@@ -5,6 +5,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     setupTypewriter();
     setupParticles();
     setupMusic();
+    setupSidebarAutoHide();
     await renderGallery();
     setupBouncingBalls();
     setupMessages();
@@ -48,6 +49,119 @@ function showPage(page) {
     });
     var pageEl = document.getElementById('page-' + page);
     if (pageEl) pageEl.classList.add('active');
+
+    // 相册入场动画
+    if (page === 'gallery') {
+        startGalleryIntro();
+    }
+}
+
+function startGalleryIntro() {
+    var galleryPage = document.getElementById('page-gallery');
+    if (!galleryPage) return;
+
+    var introShown = sessionStorage.getItem('gallery-intro-shown');
+    if (introShown) return;
+
+    galleryPage.classList.add('gallery-intro');
+    sessionStorage.setItem('gallery-intro-shown', '1');
+
+    setTimeout(function() {
+        galleryPage.classList.add('gallery-ready');
+    }, 1500);
+
+    setTimeout(function() {
+        galleryPage.classList.remove('gallery-intro', 'gallery-ready');
+    }, 2500);
+}
+
+// ==================== 侧边栏自动隐藏/展开 ====================
+function setupSidebarAutoHide() {
+    var sidebar = document.getElementById('sidebar');
+    var mainContent = document.getElementById('mainContent');
+    if (!sidebar || !mainContent) return;
+
+    var collapseTimer = null;
+    var autoHideDelay = 3000;
+    var rehideDelay = 300;
+    var edgeThreshold = 15;
+    var sidebarWidth = 220;
+    var initialPeriod = true;
+    var userInteracted = false;
+
+    function collapse() {
+        sidebar.classList.add('sidebar-collapsed');
+        mainContent.classList.add('main-content-expanded');
+    }
+
+    function expand() {
+        sidebar.classList.remove('sidebar-collapsed');
+        mainContent.classList.remove('main-content-expanded');
+    }
+
+    function scheduleCollapse(delay) {
+        clearTimeout(collapseTimer);
+        collapseTimer = setTimeout(collapse, delay);
+    }
+
+    function cancelCollapse() {
+        clearTimeout(collapseTimer);
+    }
+
+    // 首次进入：3秒后自动收起（仅当鼠标不在侧边栏上）
+    setTimeout(function() {
+        initialPeriod = false;
+        var mouseX = lastMouseX;
+        if (mouseX > sidebarWidth) {
+            collapse();
+        }
+    }, autoHideDelay);
+
+    var lastMouseX = 0;
+
+    // 全局鼠标追踪
+    document.addEventListener('mousemove', function(e) {
+        lastMouseX = e.clientX;
+
+        if (initialPeriod) return;
+
+        var collapsed = sidebar.classList.contains('sidebar-collapsed');
+
+        if (collapsed) {
+            // 鼠标接近左边缘 → 展开
+            if (e.clientX <= edgeThreshold) {
+                expand();
+            }
+        } else {
+            // 鼠标在侧边栏之外 → 延时收起
+            if (e.clientX > sidebarWidth) {
+                if (!collapseTimer) {
+                    scheduleCollapse(rehideDelay);
+                }
+            }
+        }
+    });
+
+    // 侧边栏 hover → 保持展开
+    sidebar.addEventListener('mouseenter', function() {
+        if (initialPeriod) return;
+        cancelCollapse();
+        expand();
+    });
+
+    sidebar.addEventListener('mouseleave', function() {
+        if (initialPeriod) return;
+        scheduleCollapse(rehideDelay);
+    });
+
+    // 侧边栏内点击导航 → 短暂保持展开后收起
+    sidebar.addEventListener('click', function(e) {
+        if (e.target.closest('.sidebar-link')) {
+            userInteracted = true;
+            cancelCollapse();
+            scheduleCollapse(rehideDelay);
+        }
+    });
 }
 
 // ==================== 加载个人信息 ====================

@@ -10,20 +10,29 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary: #667eea;
-            --primary-dark: #5a6fd6;
-            --text: #1a1a2e;
-            --text-secondary: #666;
-            --bg: #f0f2f5;
-            --card-bg: #fff;
-            --border: #e5e7eb;
+            --accent: #7897b0;
+            --accent-soft: rgba(120, 151, 176, 0.15);
+            --accent-glow: rgba(120, 151, 176, 0.25);
+            --text: #e0e0e0;
+            --text-dim: rgba(200, 200, 220, 0.55);
+            --text-muted: rgba(200, 200, 220, 0.35);
+            --surface: rgba(22, 22, 38, 0.85);
+            --surface-hover: rgba(28, 28, 48, 0.9);
+            --border: rgba(255, 255, 255, 0.07);
+            --border-focus: rgba(120, 151, 176, 0.4);
+            --input-bg: rgba(255, 255, 255, 0.03);
+            --input-bg-focus: rgba(255, 255, 255, 0.06);
+            --danger: #e06c6c;
+            --danger-bg: rgba(224, 108, 108, 0.08);
+            --success: #5a9e7c;
+            --success-bg: rgba(90, 158, 124, 0.1);
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
             font-family: 'Inter', system-ui, -apple-system, sans-serif;
-            background: var(--bg);
+            background: #0d0d1a;
             min-height: 100vh;
             display: flex;
             justify-content: center;
@@ -39,29 +48,32 @@
             pointer-events: none;
         }
 
+        /* 返回主页链接 */
         .back-home {
             position: fixed;
-            top: 20px;
+            top: 24px;
             left: 24px;
             z-index: 10;
             display: flex;
             align-items: center;
             gap: 0.4rem;
-            color: #666;
+            color: rgba(200, 200, 220, 0.5);
             text-decoration: none;
-            font-size: 0.9rem;
+            font-size: 0.82rem;
             font-weight: 500;
-            padding: 0.5rem 0.9rem;
-            border-radius: 8px;
-            background: rgba(255,255,255,0.8);
-            backdrop-filter: blur(10px);
-            border: 1px solid #e5e7eb;
-            transition: all 0.2s;
+            padding: 0.45rem 0.85rem;
+            border-radius: 6px;
+            background: rgba(22, 22, 38, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            transition: all 0.25s ease;
         }
 
         .back-home:hover {
-            color: var(--primary);
-            border-color: var(--primary);
+            color: rgba(220, 220, 240, 0.9);
+            border-color: rgba(255, 255, 255, 0.12);
+            background: rgba(28, 28, 48, 0.85);
         }
 
         .admin-wrapper {
@@ -70,104 +82,254 @@
             width: 100%;
         }
 
+        /* ======== 登录容器 ======== */
         .admin-container {
             width: 100%;
-            max-width: 460px;
+            max-width: 780px;
             margin: 0 auto;
         }
 
-        .admin-editor-container {
-            width: 100%;
-            max-width: 720px;
-            margin: 0 auto;
-        }
-
-        /* 卡片 */
-        .admin-card {
-            background: var(--card-bg);
-            border-radius: 16px;
-            box-shadow: 0 4px 24px rgba(0,0,0,0.06), 0 1px 4px rgba(0,0,0,0.04);
+        .login-layout {
+            display: grid;
+            grid-template-columns: 1fr 1.1fr;
+            min-height: 440px;
+            border-radius: 2px;
             overflow: hidden;
-            animation: slideUp 0.5s ease-out;
+            background: var(--surface);
             border: 1px solid var(--border);
+            box-shadow:
+                0 0 0 1px rgba(255, 255, 255, 0.03) inset,
+                0 1px 0 0 rgba(255, 255, 255, 0.04) inset,
+                0 20px 50px -20px rgba(0, 0, 0, 0.4);
         }
 
-        @keyframes slideUp {
-            from { opacity: 0; transform: translateY(24px); }
-            to { opacity: 1; transform: translateY(0); }
+        /* 左侧装饰面板 */
+        .login-visual {
+            position: relative;
+            background: rgba(18, 18, 34, 0.95);
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            padding: 2.5rem 2rem;
+            overflow: hidden;
+            border-right: 1px solid rgba(255, 255, 255, 0.05);
         }
 
-        .card-header {
-            padding: 2.5rem 2.5rem 1.25rem;
-            text-align: center;
+        .login-visual::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background:
+                radial-gradient(ellipse at 20% 80%, rgba(120, 151, 176, 0.06) 0%, transparent 60%),
+                radial-gradient(ellipse at 80% 30%, rgba(120, 151, 176, 0.04) 0%, transparent 50%);
+            pointer-events: none;
         }
 
-        .card-header .logo-icon {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            width: 56px;
-            height: 56px;
-            border-radius: 14px;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            margin-bottom: 1rem;
-            box-shadow: 0 4px 14px rgba(102,126,234,0.3);
+        /* 几何装饰线 */
+        .visual-geometry {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
         }
 
-        .card-header h1 {
-            font-size: 1.5rem;
+        .geo-line {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .geo-line.h { height: 1px; left: 0; right: 0; }
+        .geo-line.v { width: 1px; top: 0; bottom: 0; }
+
+        .geo-line.h1  { top: 18%; }
+        .geo-line.h2  { top: 52%; }
+        .geo-line.h3  { top: 76%; }
+        .geo-line.v1  { left: 28%; }
+        .geo-line.v2  { left: 62%; }
+
+        .geo-dot {
+            position: absolute;
+            width: 3px;
+            height: 3px;
+            border-radius: 50%;
+            background: rgba(120, 151, 176, 0.25);
+        }
+
+        /* 对角线 */
+        .geo-line.d {
+            height: 1px;
+            background: rgba(255, 255, 255, 0.02);
+            transform-origin: left center;
+        }
+
+        .geo-line.d1 {
+            top: 52%;
+            left: 0;
+            width: 70%;
+            transform: rotate(-12deg);
+        }
+
+        .geo-line.d2 {
+            top: 18%;
+            left: 28%;
+            width: 60%;
+            transform: rotate(18deg);
+        }
+
+        /* 渐变光晕 */
+        .visual-accent-orb {
+            position: absolute;
+            top: 38%;
+            left: 45%;
+            width: 160px;
+            height: 160px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(120, 151, 176, 0.06) 0%, transparent 70%);
+            pointer-events: none;
+            animation: orbBreathe 6s ease-in-out infinite;
+        }
+
+        @keyframes orbBreathe {
+            0%, 100% { opacity: 0.5; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.15); }
+        }
+
+        /* 鼠标追踪 - 取景框 */
+        .mouse-tracker {
+            position: absolute;
+            width: 68px;
+            height: 68px;
+            pointer-events: none;
+            z-index: 2;
+            transform: translate(-50%, -50%);
+            will-change: transform;
+        }
+
+        /* 四角 L 形标线 */
+        .mouse-tracker::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background-image:
+                linear-gradient(to right,  rgba(140,165,190,0.55) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(140,165,190,0.55) 1px, transparent 1px),
+                linear-gradient(to left,   rgba(140,165,190,0.55) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(140,165,190,0.55) 1px, transparent 1px),
+                linear-gradient(to right,  rgba(140,165,190,0.55) 1px, transparent 1px),
+                linear-gradient(to top,    rgba(140,165,190,0.55) 1px, transparent 1px),
+                linear-gradient(to left,   rgba(140,165,190,0.55) 1px, transparent 1px),
+                linear-gradient(to top,    rgba(140,165,190,0.55) 1px, transparent 1px);
+            background-size:
+                14px 1px, 1px 14px,
+                14px 1px, 1px 14px,
+                14px 1px, 1px 14px,
+                14px 1px, 1px 14px;
+            background-position:
+                top left, top left,
+                top right, top right,
+                bottom left, bottom left,
+                bottom right, bottom right;
+            background-repeat: no-repeat;
+        }
+
+        /* 中心十字准星 */
+        .mouse-tracker::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 20px;
+            height: 20px;
+            background:
+                linear-gradient(to right, transparent 9px, rgba(140,165,190,0.45) 9px, rgba(140,165,190,0.45) 11px, transparent 11px),
+                linear-gradient(to bottom, transparent 9px, rgba(140,165,190,0.45) 9px, rgba(140,165,190,0.45) 11px, transparent 11px);
+        }
+
+        .visual-label {
+            position: relative;
+            z-index: 1;
+            font-size: 0.7rem;
+            font-weight: 500;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: rgba(200, 200, 220, 0.25);
+        }
+
+        .visual-brand {
+            position: relative;
+            z-index: 1;
+            margin-top: 0.5rem;
+            font-size: 1.35rem;
             font-weight: 700;
-            color: var(--text);
-            margin-bottom: 0.35rem;
+            color: rgba(220, 220, 240, 0.7);
+            letter-spacing: -0.01em;
         }
 
-        .card-header .subtitle {
-            color: var(--text-secondary);
-            font-size: 0.9rem;
+        /* 右侧表单面板 */
+        .login-panel {
+            padding: 2.8rem 2.5rem 2.2rem;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .panel-header {
+            margin-bottom: 2rem;
+        }
+
+        .panel-header h1 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #e8e8f0;
+            letter-spacing: -0.01em;
+            margin-bottom: 0.3rem;
+        }
+
+        .panel-header .subtitle {
+            font-size: 0.82rem;
+            color: var(--text-dim);
         }
 
         /* 表单 */
         .login-form {
-            padding: 0.5rem 2.5rem 2rem;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
         }
 
         .form-group {
-            margin-bottom: 1.25rem;
+            margin-bottom: 1.15rem;
         }
 
         .form-group label {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            margin-bottom: 0.5rem;
-            color: var(--text);
+            display: block;
+            font-size: 0.75rem;
             font-weight: 500;
-            font-size: 0.85rem;
-        }
-
-        .form-group label svg {
-            width: 18px;
-            height: 18px;
-            color: #999;
+            color: rgba(200, 200, 220, 0.5);
+            margin-bottom: 0.4rem;
+            letter-spacing: 0.02em;
         }
 
         .form-group input {
             width: 100%;
-            padding: 0.75rem 0.9rem;
-            border: 1.5px solid var(--border);
-            border-radius: 10px;
+            padding: 0.7rem 0.85rem;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 4px;
             font-size: 0.9rem;
             font-family: inherit;
             outline: none;
-            transition: all 0.2s;
-            background: #f9fafb;
-            color: var(--text);
+            transition: all 0.25s ease;
+            background: var(--input-bg);
+            color: #d0d0e0;
         }
 
         .form-group input:focus {
-            border-color: var(--primary);
-            background: #fff;
-            box-shadow: 0 0 0 3px rgba(102,126,234,0.08);
+            border-color: var(--border-focus);
+            background: var(--input-bg-focus);
+            box-shadow: 0 0 0 1px var(--accent-soft);
+        }
+
+        .form-group input::placeholder {
+            color: rgba(200, 200, 220, 0.2);
         }
 
         .password-input {
@@ -175,134 +337,204 @@
         }
 
         .password-input input {
-            padding-right: 44px;
+            padding-right: 42px;
         }
 
         .toggle-password {
             position: absolute;
-            right: 8px;
+            right: 6px;
             top: 50%;
             transform: translateY(-50%);
             background: none;
             border: none;
             cursor: pointer;
-            padding: 4px;
+            padding: 5px;
             display: flex;
             align-items: center;
-            border-radius: 6px;
-            color: #999;
+            border-radius: 4px;
+            color: rgba(200, 200, 220, 0.3);
+            transition: all 0.2s ease;
         }
 
         .toggle-password:hover {
-            background: #f3f4f6;
-            color: #555;
+            color: rgba(200, 200, 220, 0.6);
+            background: rgba(255, 255, 255, 0.04);
         }
 
+        /* 表单入场 stagger */
+        .login-form .form-group {
+            opacity: 0;
+            transform: translateY(12px);
+            animation: formItemIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        .login-form .form-group:nth-child(1) { animation-delay: 0.15s; }
+        .login-form .form-group:nth-child(2) { animation-delay: 0.25s; }
+
         .submit-btn {
+            opacity: 0;
+            transform: translateY(12px);
+            animation: formItemIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.35s forwards;
             width: 100%;
-            padding: 0.85rem;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: #fff;
-            border: none;
-            border-radius: 10px;
-            font-size: 1rem;
-            font-weight: 600;
+            padding: 0.75rem;
+            background: rgba(120, 151, 176, 0.2);
+            color: #c8d8e4;
+            border: 1px solid rgba(120, 151, 176, 0.25);
+            border-radius: 4px;
+            font-size: 0.9rem;
+            font-weight: 500;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
             font-family: inherit;
-            margin-top: 0.5rem;
+            margin-top: 0.25rem;
+            letter-spacing: 0.02em;
         }
 
         .submit-btn:hover {
+            background: rgba(120, 151, 176, 0.3);
+            border-color: rgba(120, 151, 176, 0.45);
+            color: #e0e8f0;
             transform: translateY(-1px);
-            box-shadow: 0 6px 20px rgba(102,126,234,0.35);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
         }
 
-        .submit-btn:active { transform: translateY(0); }
+        .submit-btn:active {
+            transform: scale(0.985);
+            transition: transform 0.1s ease;
+        }
 
         .message {
             text-align: center;
-            margin-top: 1rem;
-            padding: 0.75rem 1rem;
-            border-radius: 8px;
-            font-size: 0.85rem;
+            margin-top: 0.85rem;
+            padding: 0.6rem 0.85rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
             display: none;
-            animation: fadeIn 0.3s ease;
+            animation: msgIn 0.25s ease;
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(-6px); }
+        @keyframes msgIn {
+            from { opacity: 0; transform: translateY(-4px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes formItemIn {
             to { opacity: 1; transform: translateY(0); }
         }
 
         .message.success {
             display: block;
-            background: #ecfdf5;
-            color: #065f46;
-            border: 1px solid #a7f3d0;
+            background: var(--success-bg);
+            color: var(--success);
+            border: 1px solid rgba(90, 158, 124, 0.2);
         }
 
         .message.error {
             display: block;
-            background: #fef2f2;
-            color: #991b1b;
-            border: 1px solid #fecaca;
+            background: var(--danger-bg);
+            color: var(--danger);
+            border: 1px solid rgba(224, 108, 108, 0.15);
         }
 
-        .card-footer {
-            padding: 1.25rem 2.5rem 2rem;
-            text-align: center;
-            border-top: 1px solid var(--border);
-            background: #fafafa;
+        /* 修改密码区域 */
+        .panel-footer {
+            margin-top: auto;
+            padding-top: 1rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
         }
 
         .toggle-password-panel {
-            color: var(--primary);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            color: rgba(200, 200, 220, 0.4);
             cursor: pointer;
-            font-size: 0.85rem;
+            font-size: 0.78rem;
             font-weight: 500;
+            background: none;
+            border: none;
+            font-family: inherit;
+            transition: color 0.2s ease;
         }
 
-        .toggle-password-panel:hover { text-decoration: underline; }
+        .toggle-password-panel:hover {
+            color: rgba(200, 200, 220, 0.7);
+        }
 
         .password-panel {
             margin-top: 0.75rem;
-            padding: 1rem;
-            background: #f9fafb;
-            border-radius: 10px;
-            border: 1px solid var(--border);
+            padding: 0.85rem;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 4px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
             text-align: left;
         }
 
         .password-panel h4 {
-            font-size: 0.9rem;
-            font-weight: 600;
-            margin-bottom: 0.75rem;
-            color: var(--text);
+            font-size: 0.8rem;
+            font-weight: 500;
+            margin-bottom: 0.6rem;
+            color: rgba(200, 200, 220, 0.55);
         }
 
         .password-panel input {
             display: block;
             width: 100%;
-            margin-bottom: 0.5rem;
+            margin-bottom: 0.45rem;
+            padding: 0.55rem 0.7rem;
+            border: 1px solid rgba(255, 255, 255, 0.07);
+            border-radius: 4px;
+            font-size: 0.82rem;
+            font-family: inherit;
+            outline: none;
+            background: rgba(255, 255, 255, 0.02);
+            color: #c0c0d0;
+            transition: border-color 0.2s ease;
         }
 
-        /* 编辑器视图 */
+        .password-panel input:focus {
+            border-color: var(--border-focus);
+        }
+
+        /* ======== 编辑器视图 ======== */
+        .admin-editor-container {
+            width: 100%;
+            max-width: 720px;
+            margin: 0 auto;
+        }
+
+        .admin-card {
+            background: var(--surface);
+            border-radius: 2px;
+            overflow: hidden;
+            animation: slideUp 0.5s ease-out;
+            border: 1px solid var(--border);
+            box-shadow:
+                0 0 0 1px rgba(255, 255, 255, 0.03) inset,
+                0 20px 50px -20px rgba(0, 0, 0, 0.4);
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(24px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* 编辑器顶栏 */
         .admin-bar {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 1rem 1.5rem;
-            background: #fafafa;
-            border-bottom: 1px solid var(--border);
+            padding: 0.9rem 1.5rem;
+            background: rgba(255, 255, 255, 0.02);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
             flex-wrap: wrap;
             gap: 0.75rem;
         }
 
         .admin-bar-user {
-            font-weight: 600;
+            font-weight: 500;
             color: var(--text);
-            font-size: 0.95rem;
+            font-size: 0.9rem;
             display: flex;
             align-items: center;
             gap: 0.5rem;
@@ -310,10 +542,11 @@
 
         .admin-bar-user::before {
             content: '';
-            width: 8px;
-            height: 8px;
+            width: 7px;
+            height: 7px;
             border-radius: 50%;
-            background: #10b981;
+            background: #5a9e7c;
+            box-shadow: 0 0 6px rgba(90, 158, 124, 0.3);
         }
 
         .editor-form {
@@ -338,29 +571,30 @@
         }
 
         .form-field label {
-            font-size: 0.82rem;
+            font-size: 0.78rem;
             font-weight: 500;
-            color: var(--text);
+            color: rgba(200, 200, 220, 0.5);
+            letter-spacing: 0.02em;
         }
 
         .form-field input,
         .form-field textarea {
-            padding: 0.65rem 0.8rem;
-            border: 1.5px solid var(--border);
-            border-radius: 8px;
-            font-size: 0.88rem;
+            padding: 0.6rem 0.75rem;
+            border: 1px solid rgba(255, 255, 255, 0.07);
+            border-radius: 4px;
+            font-size: 0.85rem;
             font-family: inherit;
             outline: none;
-            transition: all 0.2s;
-            background: #f9fafb;
-            color: var(--text);
+            transition: all 0.2s ease;
+            background: rgba(255, 255, 255, 0.02);
+            color: #c0c0d0;
         }
 
         .form-field input:focus,
         .form-field textarea:focus {
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(102,126,234,0.08);
-            background: #fff;
+            border-color: var(--border-focus);
+            background: rgba(255, 255, 255, 0.04);
+            box-shadow: 0 0 0 1px var(--accent-soft);
         }
 
         .form-field textarea {
@@ -390,16 +624,17 @@
             display: flex;
             align-items: center;
             gap: 0.75rem;
-            padding: 0.7rem 0.85rem;
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            margin-bottom: 0.5rem;
-            transition: background 0.15s;
-            background: #fff;
+            padding: 0.65rem 0.8rem;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 4px;
+            margin-bottom: 0.45rem;
+            transition: all 0.15s ease;
+            background: rgba(255, 255, 255, 0.01);
         }
 
         .message-row:hover {
-            background: #fafafa;
+            background: rgba(255, 255, 255, 0.03);
+            border-color: rgba(255, 255, 255, 0.08);
         }
 
         .message-row-meta {
@@ -409,8 +644,8 @@
         }
 
         .message-row-meta .msg-name {
-            font-weight: 600;
-            font-size: 0.85rem;
+            font-weight: 500;
+            font-size: 0.82rem;
             color: var(--text);
             overflow: hidden;
             text-overflow: ellipsis;
@@ -418,8 +653,8 @@
         }
 
         .message-row-meta .msg-time {
-            font-size: 0.72rem;
-            color: #999;
+            font-size: 0.7rem;
+            color: var(--text-muted);
             margin-top: 1px;
             white-space: nowrap;
         }
@@ -427,8 +662,8 @@
         .message-row-content {
             flex: 1;
             min-width: 0;
-            font-size: 0.84rem;
-            color: var(--text-secondary);
+            font-size: 0.82rem;
+            color: var(--text-dim);
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
@@ -436,37 +671,91 @@
 
         .message-row .delete-btn {
             flex-shrink: 0;
-            padding: 0.3rem 0.65rem;
-            border-radius: 6px;
-            border: 1px solid #fecaca;
-            background: #fef2f2;
-            color: #dc2626;
-            font-size: 0.78rem;
+            padding: 0.3rem 0.6rem;
+            border-radius: 4px;
+            border: 1px solid rgba(224, 108, 108, 0.25);
+            background: rgba(224, 108, 108, 0.06);
+            color: #e06c6c;
+            font-size: 0.76rem;
             font-weight: 500;
             cursor: pointer;
-            transition: all 0.15s;
+            transition: all 0.15s ease;
             white-space: nowrap;
+            font-family: inherit;
         }
 
         .message-row .delete-btn:hover {
-            background: #dc2626;
+            background: #e06c6c;
             color: #fff;
-            border-color: #dc2626;
+            border-color: #e06c6c;
         }
 
         .message-mgmt-empty {
             text-align: center;
-            color: #999;
+            color: var(--text-muted);
             padding: 1.5rem 0;
-            font-size: 0.85rem;
+            font-size: 0.82rem;
         }
 
-        @media (max-width: 520px) {
-            .form-row { grid-template-columns: 1fr; }
-            .card-header { padding: 2rem 1.5rem 1rem; }
-            .login-form { padding: 0.5rem 1.5rem 1.5rem; }
-            .card-footer { padding: 1rem 1.5rem 1.5rem; }
-            .editor-form { padding: 1.25rem; }
+        /* 覆盖 docsy 按钮样式适配暗色主题 */
+        .docsy-btn-secondary {
+            background: rgba(255, 255, 255, 0.05);
+            color: #c0c0d0;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .docsy-btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(255, 255, 255, 0.15);
+            color: #e0e0e0;
+        }
+
+        .docsy-btn-primary {
+            background: rgba(120, 151, 176, 0.25);
+            color: #d0dce4;
+            border: 1px solid rgba(120, 151, 176, 0.3);
+        }
+
+        .docsy-btn-primary:hover {
+            background: rgba(120, 151, 176, 0.35);
+            border-color: rgba(120, 151, 176, 0.5);
+            color: #e8f0f4;
+        }
+
+        .docsy-btn-danger {
+            background: rgba(224, 108, 108, 0.15);
+            color: #e06c6c;
+            border: 1px solid rgba(224, 108, 108, 0.25);
+        }
+
+        .docsy-btn-danger:hover {
+            background: #e06c6c;
+            color: #fff;
+            border-color: #e06c6c;
+        }
+
+        /* ======== 响应式 ======== */
+        @media (max-width: 680px) {
+            .login-layout {
+                grid-template-columns: 1fr;
+                min-height: auto;
+            }
+
+            .login-visual {
+                display: none;
+            }
+
+            .login-panel {
+                padding: 2rem 1.5rem 1.8rem;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .editor-form {
+                padding: 1.25rem;
+            }
         }
     </style>
 </head>
@@ -482,53 +771,59 @@
     <div class="admin-wrapper">
         <!-- 登录视图 -->
         <div class="admin-container" id="loginView">
-            <div class="admin-card">
-                <div class="card-header">
-                    <div class="logo-icon">
-                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
-                            <circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 01-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/>
-                        </svg>
+            <div class="login-layout">
+                <!-- 左侧：几何装饰面板 -->
+                <div class="login-visual">
+                    <div class="visual-geometry">
+                        <div class="geo-line h h1"></div>
+                        <div class="geo-line h h2"></div>
+                        <div class="geo-line h h3"></div>
+                        <div class="geo-line v v1"></div>
+                        <div class="geo-line v v2"></div>
+                        <div class="geo-line d d1"></div>
+                        <div class="geo-line d d2"></div>
+                        <div class="geo-dot" style="top:18%;left:28%;"></div>
+                        <div class="geo-dot" style="top:18%;left:62%;"></div>
+                        <div class="geo-dot" style="top:52%;left:28%;"></div>
+                        <div class="geo-dot" style="top:52%;left:62%;"></div>
+                        <div class="geo-dot" style="top:76%;left:62%;"></div>
+                        <div class="geo-dot" style="top:76%;left:28%;"></div>
+                        <div class="geo-dot" style="top:35%;left:45%;"></div>
                     </div>
-                    <h1>管理员登录</h1>
-                    <p class="subtitle">登录以编辑个人主页信息</p>
+                    <div class="visual-accent-orb"></div>
+                    <div>
+                        <div class="visual-label">管理后台</div>
+                    </div>
+                    <div class="mouse-tracker" id="mouseTracker"></div>
                 </div>
 
-                <form id="loginForm" class="login-form">
-                    <div class="form-group">
-                        <label for="loginUsername">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-                            用户名
-                        </label>
-                        <input type="text" id="loginUsername" name="username" placeholder="请输入管理员用户名" required>
+                <!-- 右侧：登录表单 -->
+                <div class="login-panel">
+                    <div class="panel-header">
+                        <h1>登录</h1>
+                        <p class="subtitle">登录以编辑主页信息</p>
                     </div>
 
-                    <div class="form-group">
-                        <label for="loginPassword">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
-                            密码
-                        </label>
-                        <div class="password-input">
-                            <input type="password" id="loginPassword" name="password" placeholder="请输入密码" required>
-                            <button type="button" class="toggle-password" onclick="togglePassword('loginPassword', this)">
-                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-                            </button>
+                    <form id="loginForm" class="login-form">
+                        <div class="form-group">
+                            <label for="loginUsername">用户名</label>
+                            <input type="text" id="loginUsername" name="username" placeholder="管理员用户名" required>
                         </div>
-                    </div>
 
-                    <button type="submit" class="submit-btn">登 录</button>
-                    <div id="loginMessage" class="message"></div>
-                </form>
+                        <div class="form-group">
+                            <label for="loginPassword">密码</label>
+                            <div class="password-input">
+                                <input type="password" id="loginPassword" name="password" placeholder="密码" required>
+                                <button type="button" class="toggle-password" onclick="togglePassword('loginPassword', this)">
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                                </button>
+                            </div>
+                        </div>
 
-                <div class="card-footer">
-                    <span class="toggle-password-panel" id="showPasswordPanel">修改密码</span>
-                    <div class="password-panel hidden" id="passwordPanel">
-                        <h4>修改管理员密码</h4>
-                        <input type="text" id="pwdUsername" placeholder="用户名" class="form-group input" style="margin-bottom:8px;">
-                        <input type="password" id="pwdOldPassword" placeholder="旧密码" style="margin-bottom:8px;">
-                        <input type="password" id="pwdNewPassword" placeholder="新密码（至少8位）">
-                        <button class="docsy-btn docsy-btn-secondary" id="updatePasswordBtn" style="width:100%;margin-top:8px;">确认修改</button>
-                        <div id="passwordMessage" class="message"></div>
-                    </div>
+                        <button type="submit" class="submit-btn">登录</button>
+                        <div id="loginMessage" class="message"></div>
+                    </form>
+
                 </div>
             </div>
         </div>
@@ -661,17 +956,16 @@
         </div>
     </div>
 
-    <!-- 粒子脚本 -->
+    <!-- 漂浮粒子 + 鼠标追踪脚本 -->
     <script>
     (function() {
         var canvas = document.getElementById('particleCanvas');
         if (!canvas) return;
         var ctx = canvas.getContext('2d');
         var particles = [];
-        var COUNT = 60;
-        var CONNECT = 130;
-        var REPEL = 90;
+        var COUNT = 70;
         var mouse = { x: -9999, y: -9999 };
+        var time = 0;
 
         function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
         resize();
@@ -681,9 +975,12 @@
             particles.push({
                 x: Math.random() * canvas.width,
                 y: Math.random() * canvas.height,
-                vx: (Math.random() - 0.5) * 0.5,
-                vy: (Math.random() - 0.5) * 0.5,
-                r: Math.random() * 2 + 1
+                r: 1 + Math.random() * 3.5,
+                baseSpeed: 0.15 + Math.random() * 0.45,
+                phase: Math.random() * Math.PI * 2,
+                driftAmp: 0.3 + Math.random() * 0.7,
+                driftFreq: 0.3 + Math.random() * 0.5,
+                baseOpacity: 0.12 + Math.random() * 0.25
             });
         }
 
@@ -692,48 +989,100 @@
 
         function animate() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
+            time += 0.003;
 
             for (var i = 0; i < particles.length; i++) {
                 var p = particles[i];
-                p.x += p.vx; p.y += p.vy;
-                if (p.x < 0 || p.x > canvas.width) p.vx *= -1;
-                if (p.y < 0 || p.y > canvas.height) p.vy *= -1;
-                p.x = Math.max(0, Math.min(canvas.width, p.x));
-                p.y = Math.max(0, Math.min(canvas.height, p.y));
 
+                // 正弦漂移 - 模拟漂浮
+                var driftX = Math.sin(time * p.driftFreq + p.phase) * p.driftAmp;
+                var driftY = Math.cos(time * p.driftFreq * 1.4 + p.phase) * p.driftAmp;
+                p.y -= p.baseSpeed + driftY * 0.3;
+
+                p.x += driftX;
+                p.y += driftY * 0.2;
+
+                // 循环：飘出顶部后从底部重新进入
+                if (p.y < -20) { p.y = canvas.height + 20; p.x = Math.random() * canvas.width; }
+                if (p.y > canvas.height + 20) { p.y = -20; p.x = Math.random() * canvas.width; }
+                if (p.x < -20) p.x = canvas.width + 20;
+                if (p.x > canvas.width + 20) p.x = -20;
+
+                // 鼠标微推
                 var dx = p.x - mouse.x, dy = p.y - mouse.y;
                 var dist = Math.sqrt(dx*dx + dy*dy);
-                if (dist < REPEL && dist > 0) {
-                    var f = (REPEL - dist) / REPEL;
-                    p.vx += (dx/dist) * f * 1.2;
-                    p.vy += (dy/dist) * f * 1.2;
+                if (dist < 160 && dist > 0) {
+                    var f = (160 - dist) / 160;
+                    p.x += (dx/dist) * f * 0.6;
+                    p.y += (dy/dist) * f * 0.6;
                 }
-                p.vx *= 0.99; p.vy *= 0.99;
+
+                // 波动透明度
+                var opacity = p.baseOpacity + Math.sin(time * 1.5 + p.phase) * 0.06;
+
+                // 绘制粒子 - 双层光晕
+                var gradient = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.r * 3);
+                gradient.addColorStop(0, 'rgba(150,170,200,' + (opacity * 1.4) + ')');
+                gradient.addColorStop(0.5, 'rgba(130,150,180,' + opacity + ')');
+                gradient.addColorStop(1, 'rgba(120,140,170,0)');
 
                 ctx.beginPath();
-                ctx.arc(p.x, p.y, p.r, 0, Math.PI*2);
-                ctx.fillStyle = 'rgba(130,140,170,0.3)';
+                ctx.arc(p.x, p.y, p.r * 3, 0, Math.PI*2);
+                ctx.fillStyle = gradient;
                 ctx.fill();
             }
 
-            for (var i = 0; i < particles.length; i++) {
-                for (var j = i+1; j < particles.length; j++) {
-                    var a = particles[i], b = particles[j];
-                    var dx = a.x - b.x, dy = a.y - b.y;
-                    var dist = Math.sqrt(dx*dx + dy*dy);
-                    if (dist < CONNECT) {
-                        ctx.beginPath();
-                        ctx.moveTo(a.x, a.y);
-                        ctx.lineTo(b.x, b.y);
-                        ctx.strokeStyle = 'rgba(150,160,190,' + ((1-dist/CONNECT)*0.18) + ')';
-                        ctx.lineWidth = 0.5;
-                        ctx.stroke();
-                    }
-                }
-            }
             requestAnimationFrame(animate);
         }
         animate();
+
+        // ======== 鼠标追踪光点 ========
+        var tracker = document.getElementById('mouseTracker');
+        var visualPanel = document.querySelector('.login-visual');
+        if (tracker && visualPanel) {
+            var tx = 0, ty = 0;     // target
+            var cx = 0, cy = 0;     // current (lerped)
+            var panelRect = null;
+
+            function updatePanelRect() {
+                panelRect = visualPanel.getBoundingClientRect();
+            }
+            updatePanelRect();
+            window.addEventListener('resize', updatePanelRect);
+
+            document.addEventListener('mousemove', function(e) {
+                if (!panelRect) return;
+                // 仅在登录视图可见时追踪
+                var loginView = document.getElementById('loginView');
+                if (!loginView || loginView.classList.contains('hidden')) {
+                    tracker.style.opacity = '0';
+                    return;
+                }
+                tracker.style.opacity = '1';
+
+                // 相对面板左上角
+                var relX = e.clientX - panelRect.left;
+                var relY = e.clientY - panelRect.top;
+
+                // 限制在面板范围内，留一些边距
+                tx = Math.max(20, Math.min(panelRect.width - 20, relX));
+                ty = Math.max(20, Math.min(panelRect.height - 20, relY));
+            });
+
+            document.addEventListener('mouseleave', function() {
+                tracker.style.opacity = '0';
+            });
+
+            // 独立动画循环：lerp 插值平滑跟踪
+            function trackLoop() {
+                cx += (tx - cx) * 0.08;
+                cy += (ty - cy) * 0.08;
+                tracker.style.left = cx + 'px';
+                tracker.style.top = cy + 'px';
+                requestAnimationFrame(trackLoop);
+            }
+            trackLoop();
+        }
     })();
     </script>
 
