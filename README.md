@@ -21,14 +21,14 @@ go build -o main.exe     # 编译为可执行文件
 
 ## 启动模式🫡
 
-程序启动时会自动检测 `ssl/` 目录下的证书文件：
+程序启动时会自动检测 `ssl/Radmin_LAN/` 目录下的证书文件：
 
-- **证书存在** (`ssl/server.crt` + `ssl/server.key`): 以 HTTPS 模式启动，监听 `10.17.88.210:8443`
+- **证书存在** (`ssl/Radmin_LAN/server_LAN.crt` + `ssl/Radmin_LAN/server_LAN.key`): 以 HTTPS 模式启动，监听 `localhost:8443`
 - **证书缺失**: 以 HTTP 模式启动，监听 `:8080`
-- **如果需要启用HTTPS协议，请自行创建`ssl/`目录，添加`ssl/server.crt`和`ssl/server.key`**
+- **如果需要启用HTTPS协议，请自行创建`ssl/Radmin_LAN/`目录，添加`server_LAN.crt`和`server_LAN.key`**
 
 ## 项目结构😝
-- **前言**：请自行创建`data/image/`文件夹存放要展示的照片，可以选择自行创建`ssl/`用于存放`.crt`与`.key`文件以启动HTTPS
+- **前言**：请自行创建`data/image/`文件夹存放要展示的照片，如需启用HTTPS请自行创建`ssl/Radmin_LAN/`目录并放入`server_LAN.crt`与`server_LAN.key`文件
 ```
 ├── main.go                          # 程序入口（数据初始化 + 自适应 HTTP/HTTPS 启动）
 ├── router/
@@ -74,8 +74,6 @@ go build -o main.exe     # 编译为可执行文件
 │   ├── profile.json                 # 个人信息持久化存储（若不存在会自动创建）
 │   └── messages.json                # 留言板持久化存储（若不存在会自动创建）
 ├── ssl/                             # SSL 证书存放目录（可选）
-│   ├── server.crt
-│   └── server.key
 ```
 
 ## API 路由😋
